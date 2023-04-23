@@ -1,15 +1,15 @@
 <template>
     <NuxtLayout>
-        <LoginForm />
+        <SignUpForm />
     </NuxtLayout>
 </template>
 
 <script>
-    import LoginForm from '@/components/auth/LoginForm.vue'
+    import SignUpForm from '@/components/auth/SignUpForm.vue'
 
     export default {
         components: {
-            LoginForm
+            SignUpForm
         }
     }
 </script>

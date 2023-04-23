@@ -1,15 +1,15 @@
 <template>
     <NuxtLayout>
-        <LoginForm />
+        <ForgotPassword />
     </NuxtLayout>
 </template>
 
 <script>
-    import LoginForm from '@/components/auth/LoginForm.vue'
+    import ForgotPassword from '@/components/auth/ForgotPassword.vue'
 
     export default {
         components: {
-            LoginForm
+            ForgotPassword
         }
     }
 </script>

@@ -12,11 +12,11 @@
             <div  class="mt-2">
               <div>
                 <div class="font-dela text-title text-3xl text-center">
-                  Inicia sesión en tu cuenta
+                  Crea una cuenta
                 </div>
 
                 <p class="font-blokletters text-paragraph text-base text-center mt-3">
-                  Por favor introduce tus credenciales para iniciar sesión
+                  Rellena los siguientes datos para crear tu cuenta
                 </p>
 
                 <div class="mt-3 bg-primary" style="height:1px"></div>
@@ -25,7 +25,17 @@
               <div>
                 <div class="mt-10">
                   <input
-                    class="input-material font-blokletters text-sm border rounded w-full py-2 px-3 text-gray-700 leading-tight"
+                    style="border-color: lightgray"
+                    class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-primary font-blokletters text-sm"
+                    id="name"
+                    type="text"
+                    placeholder="Nombre completo"
+                  >
+                </div>
+                <div class="mt-10">
+                  <input
+                    style="border-color: lightgray"
+                    class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-primary font-blokletters text-sm"
                     id="email"
                     type="text"
                     placeholder="Correo"
@@ -33,7 +43,8 @@
                 </div>
                 <div class="mt-10">
                   <input
-                    class="font-blokletters text-sm border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:border-primary-500 focus:ring-2 focus:ring-primary transition-all duration-300 ease-in-out"
+                    style="border-color: lightgray"
+                    class="border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-primary font-blokletters text-sm"
                     id="password"
                     type="password"
                     placeholder="Contraseña"
@@ -42,25 +53,15 @@
 
                 <br>
 
-                <div class="block sm:flex justify-between items-center">
-                    <div class="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
-                        <input type="checkbox" id="remember" name="remember" class="checkbox checkbox-primary" />
-                        <label for="remember" class="ml-2 text-gray-700 font-blokletters text-sm">Recuérdame</label>
-                    </div>
-                    <nuxt-link to="/auth/forgot-password" class="text-primary font-blokletters text-sm font-semibold w-full sm:w-auto text-center sm:text-right">¿Olvidaste tu contraseña?</nuxt-link>
-                </div>
-
-                <br>
-
                 <div class="button-m-primary">
-                  <button class="w-full btn btn-primary text-white rounded-lg font-blokletters">Iniciar sesión</button>
+                  <button class="w-full btn btn-primary text-white rounded-lg font-blokletters">Registrarme</button>
                 </div>
 
                 <br>
 
                 <div class="flex justify-center">
-                  <h3 class="ml-2 text-gray-700 font-blokletters text-sm">¿No tienes una cuenta? &nbsp;</h3>
-                  <nuxt-link to="/auth/signup" href="#" class="text-primary font-blokletters text-sm font-semibold">Registrate</nuxt-link>
+                  <h3 class="ml-2 text-gray-700 font-blokletters text-sm">¿Ya tienes una cuenta? &nbsp;</h3>
+                  <nuxt-link to="/auth/login" class="text-primary font-blokletters text-sm font-semibold">Inicia Sesión</nuxt-link>
                 </div>
               </div>
             </div>
@@ -87,25 +88,3 @@
   }))
 
 </script>
-<style scoped>
-
-input:focus {
-  outline: none;
-}
-.input-material {
-  border-width: 2px;
-  border-color: rgba(207, 207, 207, 0.836);
-}
-
-
-.input-material:focus {
-  border-bottom-color: #DE1E98 !important;
-  border-bottom-width: 2px;
-  transition: all 0.4s ease;
-}
-
-.input-material:focus::after {
-  width: 100%;
-  transition: width 0.3s ease;
-}
-</style>
