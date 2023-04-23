@@ -22,7 +22,7 @@ module.exports = {
     },
 
     screens: {
-      'xs': {'max': '480px'}, // Media query personalizada para pantallas de 480px o menos
+      'xs': {'max': '480px'},
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
@@ -39,7 +39,8 @@ module.exports = {
     themes: [
       {
         'my-theme': {
-          primary: '#DE1E98', // Color primario personalizado
+          primary: '#DE1E98',
+          secondary: '#352456'
         },
         screens: {
           '15in': '1350px'

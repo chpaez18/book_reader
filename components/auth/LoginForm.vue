@@ -7,7 +7,7 @@
 
         <div class="w-full max-w-xl">
           <div class="grid grid-cols-1 animate__animated animate__backInDown">
-            <img style="width: 60%" class="mb-4 place-self-center" :src="logo" />
+            <LogoPinkLogo style='width: 60%' class="mb-4 place-self-center"/>
 
             <div  class="mt-2">
               <div>
@@ -53,14 +53,14 @@
                 <br>
 
                 <div class="button-m-primary">
-                  <button class="w-full btn btn-primary text-white rounded-lg font-blokletters">Iniciar sesión</button>
+                  <button @click=" $event => login() " class="w-full btn btn-primary text-white rounded-lg font-blokletters">Iniciar sesión</button>
                 </div>
 
                 <br>
 
                 <div class="flex justify-center">
                   <h3 class="ml-2 text-gray-700 font-blokletters text-sm">¿No tienes una cuenta? &nbsp;</h3>
-                  <nuxt-link to="/auth/signup" href="#" class="text-primary font-blokletters text-sm font-semibold">Registrate</nuxt-link>
+                  <nuxt-link to="/auth/signup" class="text-primary font-blokletters text-sm font-semibold">Registrate</nuxt-link>
                 </div>
               </div>
             </div>
@@ -70,42 +70,65 @@
       </div>
 
       <!-- columna 2 -->
-      <div class="w-1/2 bg-custom bg-cover bg-no-repeat text-white p-4 min-h-screen hidden md:block" :style="column2Image">
+      <div class="w-1/2 bg-custom bg-cover bg-no-repeat text-white p-4 min-h-screen hidden md:block" >
       </div>
 
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-  const runtimeConfig = useRuntimeConfig();
-  const cdnUrl = runtimeConfig.public.CDN_URL;
+<script setup>
 
-  const logo = ref(`${cdnUrl}/logo_1.svg`);
-  const column2Image = computed(() => ({
-    backgroundImage: `url(${cdnUrl}/login_mockup.png)`
-  }))
+  import { useRouter } from 'vue-router';
 
+  const router = useRouter();
+  const { $userStore, $generalStore } = useNuxtApp()
+
+
+  const login = async () => {
+
+    let errors = ref(null)
+
+    errors.value = null
+
+    try {
+
+      let res = await $userStore.login('admin@testing.com', 'clave123')
+      await $userStore.setUser(res.data)
+
+      $generalStore.setIsLogged(true)
+
+      router.push('/dashboard');
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 </script>
+
 <style scoped>
 
-input:focus {
-  outline: none;
-}
-.input-material {
-  border-width: 2px;
-  border-color: rgba(207, 207, 207, 0.836);
-}
+  input:focus {
+    outline: none;
+  }
+  .input-material {
+    border-width: 2px;
+    border-color: rgba(207, 207, 207, 0.836);
+  }
 
 
-.input-material:focus {
-  border-bottom-color: #DE1E98 !important;
-  border-bottom-width: 2px;
-  transition: all 0.4s ease;
-}
+  .input-material:focus {
+    border-bottom-color: #DE1E98 !important;
+    border-bottom-width: 2px;
+    transition: all 0.4s ease;
+  }
 
-.input-material:focus::after {
-  width: 100%;
-  transition: width 0.3s ease;
-}
+  .input-material:focus::after {
+    width: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .bg-custom {
+    background-image: url('/login_mockup.png');
+  }
 </style>

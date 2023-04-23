@@ -7,7 +7,7 @@
 
         <div class="w-full max-w-3xl">
           <div class="grid grid-cols-1 animate__animated animate__backInDown">
-            <img style="width: 60%" class="mb-4 place-self-center" :src="logo" />
+            <LogoPinkLogo style="width: 60%" class="mb-4 place-self-center"/>
 
             <div  class="mt-2">
               <div>
@@ -55,13 +55,3 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  const runtimeConfig = useRuntimeConfig();
-  const cdnUrl = runtimeConfig.public.CDN_URL;
-
-  const logo = ref(`${cdnUrl}/logo_1.svg`);
-  const column2Image = computed(() => ({
-    backgroundImage: `url(${cdnUrl}/login_mockup.png)`
-  }))
-
-</script>
