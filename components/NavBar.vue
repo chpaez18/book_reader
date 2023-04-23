@@ -10,7 +10,7 @@
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
-            <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+            <img src="" />
           </div>
         </label>
         <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
@@ -25,19 +25,4 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { useRouter } from 'vue-router';
-
-  const router = useRouter();
-  const { $generalStore } = useNuxtApp()
-
-  const logout = async () => {
-
-    $generalStore.setIsLogged(false)
-    router.push('/auth/login');
-
-  }
-
-</script>
 
