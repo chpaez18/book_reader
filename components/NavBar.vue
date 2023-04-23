@@ -1,0 +1,43 @@
+<template>
+  <div class="navbar bg-secondary">
+    <div class="navbar-start">
+      <LogoIsoLogo class="w-11" />
+    </div>
+    <div class="navbar-center">
+      <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
+    </div>
+    <div class="navbar-end">
+      <div class="dropdown dropdown-end">
+        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full">
+            <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+          </div>
+        </label>
+        <ul tabindex="0" class="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
+          <li>
+            <a class="justify-between">
+              Perfil
+            </a>
+          </li>
+          <li><a @click=" $event => logout() ">Cerrar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+  const { $generalStore } = useNuxtApp()
+
+  const logout = async () => {
+
+    $generalStore.setIsLogged(false)
+    router.push('/auth/login');
+
+  }
+
+</script>
+

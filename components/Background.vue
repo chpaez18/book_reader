@@ -3,7 +3,8 @@
 </template>
 
 <script setup lang="ts">
-    const runtimeConfig = useRuntimeConfig();
+    /* const runtimeConfig = useRuntimeConfig();
     const cdnUrl = runtimeConfig.public.CDN_URL;
-    const image = ref(`${cdnUrl}/Fondo.svg`);
+    const image = ref(`${cdnUrl}/Fondo.svg`); */
+    const image = ref(`/Fondo.svg`);
 </script>

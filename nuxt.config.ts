@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     pages: true,
     runtimeConfig: {
         public: {
-            CDN_URL: process.env.CDN_URL
+            //CDN_URL: process.env.CDN_URL
         }
     },
     css: [
@@ -20,5 +20,5 @@ export default defineNuxtConfig({
           tailwindcss: {},
           autoprefixer: {},
         },
-    },
+    }
 })
