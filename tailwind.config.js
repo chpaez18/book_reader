@@ -10,6 +10,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      width: {
+        '370': '370px',
+      },
+      height: {
+        '668': '668px',
+      },
       fontFamily: {
         dela: ['Dela Gothic One'],
         blokletters: ['Blokletters Balpen']
@@ -17,19 +23,24 @@ module.exports = {
       textColor: {
         'title': '#6633CC',
         'paragraph': '#5E435E',
-        'primary': '#DE1E98'
+        'primary': '#DE1E98',
+        'third': '#F4F4F4'
       }
     },
 
     screens: {
-      'xs': {'max': '480px'},
+      '3xs' : '320px',
+      '2xs' : '280px',
+      '1xs' : '350px',
+      'xs': '480px',
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
       'xl': '1280px',
       '2xl': '1536px',
       '3xl': '1920px',
-      '15in': '1350px'
+      '15in': '1350px',
+      '17in': '1700px'
     },
   },
   plugins: [
@@ -40,7 +51,8 @@ module.exports = {
       {
         'my-theme': {
           primary: '#DE1E98',
-          secondary: '#352456'
+          secondary: '#352456',
+          third: '#F4F4F4'
         },
         screens: {
           '15in': '1350px'

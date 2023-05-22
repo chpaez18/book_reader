@@ -6,7 +6,7 @@
       <div class="md: items-center w-full md:w-1/2 text-white p-4 min-h-screen flex items-start md:items-center justify-center">
 
         <div class="w-full max-w-xl">
-          <div class="grid grid-cols-1 animate__animated animate__backInDown">
+          <div class="grid grid-cols-1 animate__animated animate__bounce">
             <LogoPinkLogo style="width: 60%" class="mb-4 place-self-center"/>
 
             <div  class="mt-2">

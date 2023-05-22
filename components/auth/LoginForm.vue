@@ -1,13 +1,14 @@
 <template>
   <div class="h-screen m-0 p-0">
+
     <div class="h-screen w-full flex">
 
       <!-- column 1 -->
       <div class="md: items-center w-full md:w-1/2 text-white p-4 min-h-screen flex items-start md:items-center justify-center">
 
         <div class="w-full max-w-xl">
-          <div class="grid grid-cols-1 animate__animated animate__backInDown">
-            <LogoPinkLogo style='width: 60%' class="mb-4 place-self-center"/>
+          <div class="grid grid-cols-1 animate__animated animate__bounce">
+            <LogoPinkLogo/>
 
             <div  class="mt-2">
               <div>
@@ -16,21 +17,21 @@
                 </div>
 
                 <p class="font-blokletters text-paragraph text-base text-center mt-3">
-                  Por favor introduce tus credenciales para iniciar sesión
+                  Usa la siguiente opción para iniciar sesión
                 </p>
 
-                <div class="mt-3 bg-primary" style="height:1px"></div>
+                <div class="divider bg-primary" style="height:1px"></div>
               </div>
 
               <div>
-                <div class="mt-10">
+                <!-- <div class="mt-10">
                   <input
                     class="input-material font-blokletters text-sm border rounded w-full py-2 px-3 text-gray-700 leading-tight"
                     id="email"
                     type="text"
                     placeholder="Correo"
                   >
-                </div>
+                </div> 
                 <div class="mt-10">
                   <input
                     class="font-blokletters text-sm border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:border-primary-500 focus:ring-2 focus:ring-primary transition-all duration-300 ease-in-out"
@@ -50,18 +51,20 @@
                     <nuxt-link to="/auth/forgot-password" class="text-primary font-blokletters text-sm font-semibold w-full sm:w-auto text-center sm:text-right">¿Olvidaste tu contraseña?</nuxt-link>
                 </div>
 
-                <br>
+                <br>-->
 
                 <div class="button-m-primary">
-                  <button @click=" $event => login() " class="w-full btn btn-primary text-white rounded-lg font-blokletters">Iniciar sesión</button>
+                  <!-- <button @click=" $event => login() " class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button> -->
+                  <!-- <button @click="signIn('google')" class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button> -->
+                  <a :href="googleUrl"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button></a>
                 </div>
 
                 <br>
 
-                <div class="flex justify-center">
+                <!-- <div class="flex justify-center">
                   <h3 class="ml-2 text-gray-700 font-blokletters text-sm">¿No tienes una cuenta? &nbsp;</h3>
                   <nuxt-link to="/auth/signup" class="text-primary font-blokletters text-sm font-semibold">Registrate</nuxt-link>
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -82,28 +85,14 @@
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
-  const { $userStore, $generalStore } = useNuxtApp()
+  const { $userStore, $axios } = useNuxtApp()
+    
 
+/* $generalStore.setIsLogged(false)
+$userStore.resetUser() */
+  //const google = await $axios.get('/auth/get-google-login-url')
+  const googleUrl = await $userStore.getGoogleUrl()
 
-  const login = async () => {
-
-    let errors = ref(null)
-
-    errors.value = null
-
-    try {
-
-      let res = await $userStore.login('admin@testing.com', 'clave123')
-      await $userStore.setUser(res.data)
-
-      $generalStore.setIsLogged(true)
-
-      router.push('/dashboard');
-    } catch (error) {
-      console.log(error)
-    }
-
-  }
 </script>
 
 <style scoped>

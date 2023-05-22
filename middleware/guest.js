@@ -1,13 +1,11 @@
 import { useRouter } from 'vue-router';
-export default function ({ store, redirect }) {
 
-
+export default defineNuxtRouteMiddleware(async (to, from) => {
   const router = useRouter();
-  const { $generalStore } = useNuxtApp()
+  const { $generalStore, $userStore } = useNuxtApp()
 
-    const isLoggedIn = $generalStore.isLogged
-    console.log(isLoggedIn)
+    const isLoggedIn = $userStore.getUserToken()
     if (isLoggedIn) {
         return navigateTo('/dashboard')
     }
-  }
+})

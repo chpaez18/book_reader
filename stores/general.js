@@ -8,6 +8,9 @@ export const useGeneralStore = defineStore('general', {
     actions: {
       setIsLogged(value) {
         this.$state.isLogged = value
+      },
+      getIsLogged() {
+        return this.$state.isLogged
       }
     },
     persist: true

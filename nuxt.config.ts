@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         public: {
             //CDN_URL: process.env.CDN_URL
+            API_URL: process.env.API_URL
         }
     },
     css: [
@@ -20,5 +21,5 @@ export default defineNuxtConfig({
           tailwindcss: {},
           autoprefixer: {},
         },
-    }
+    },
 })

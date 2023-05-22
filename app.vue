@@ -1,5 +1,5 @@
 <template>
-   <div>
+   <div class="xs:max-w-none ">
     <NuxtLayout>
        <NuxtPage />
        <Background />
