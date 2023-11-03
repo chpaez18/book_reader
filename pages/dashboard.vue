@@ -86,13 +86,12 @@
       </div>
 
       <!-- Tercera columna -->
-        <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full">
-            <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full">
-            <img :src="image" alt="Descripción de la imagen" class="w-[908px] md:ml-[-262px] xs:ml-1 h-auto object-cover md:max-w-none xs:max-w-100" />
-          </div>
-          </div>
+        <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full" style="max-height: 500px;height: 500px;background-image: url('/mockup2.png');background-size: 188%;background-repeat: no-repeat;background-position: center;">
+        </div>
     </div>
   </div>
+
+  <Flipbook />
 </section>
   </NuxtLayout>
 

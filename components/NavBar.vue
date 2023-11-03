@@ -8,11 +8,11 @@
     </div>
     <div class="navbar-end">
       <!-- Socials -->
-        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-instagram" :style="{ width: '35px', height: '35px' }" /></a>
-        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-linkedin" :style="{ width: '35px', height: '35px' }" /></a>
-        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-youtube" :style="{ width: '35px', height: '35px' }" /></a>
-        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-tiktok" :style="{ width: '35px', height: '35px' }" /></a>
-        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-behance" :style="{ width: '35px', height: '35px' }" /></a>
+        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-instagram" :style="{ width: '35px', height: '46px' }" /></a>
+        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-linkedin" :style="{ width: '35px', height: '46px' }" /></a>
+        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-youtube" :style="{ width: '35px', height: '46px' }" /></a>
+        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-tiktok" :style="{ width: '35px', height: '46px' }" /></a>
+        <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-behance" :style="{ width: '35px', height: '46px' }" /></a>
       <!-- Socials -->
       &nbsp;
       <div class="dropdown dropdown-end">
