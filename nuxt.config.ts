@@ -16,10 +16,14 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         '@pinia-plugin-persistedstate/nuxt'
     ],
+    plugins: [
+        { src: "~/plugins/jquery", mode: "client" },
+        { src: '@/plugins/flipbook', mode: 'client' }
+    ],
     postcss: {
         plugins: {
           tailwindcss: {},
           autoprefixer: {},
         },
-    },
+    }
 })

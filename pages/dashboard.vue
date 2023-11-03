@@ -80,7 +80,7 @@
             <h2 class="font-dela text-title text-4xl">{{userBookInfo.book_info.name}}</h2>
             <p class="font-blokletters text-paragraph mt-5">{{userBookInfo.book_info.description}}</p>
             <br>
-            <a><button class="w-full btn btn-primary text-white rounded-lg font-blokletters ">¡Empecemos!</button></a>
+            <a href="/book"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters ">¡Empecemos!</button></a>
           </div>
           </div>
       </div>
@@ -90,8 +90,6 @@
         </div>
     </div>
   </div>
-
-  <Flipbook />
 </section>
   </NuxtLayout>
 
