@@ -1,0 +1,132 @@
+#book-container {
+    position: relative;
+    width: 100%; /* Usa el 100% del viewport o ajusta según sea necesario */
+    height: 839px; /* Ajusta la altura al viewport para evitar el scroll */
+    overflow: hidden; /* Oculta cualquier desbordamiento */
+}
+
+#book {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centra el libro */
+    width: 400px; /* Ancho del libro */
+    height: 700px; /* Altura del libro */
+
+}
+
+
+.my-page {
+    font-family: 'Arial', sans-serif;
+}
+
+
+.emoji-radio {
+    display: none; /* Esconde los radio buttons */
+}
+
+.emoji-label {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 5px;
+}
+
+/* Estilos para cuando el radio está seleccionado */
+.emoji-radio:checked + .emoji-label {
+    background-color: #6633CC;
+    border-radius: 50%;
+}
+
+
+.palabras-contenedor {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+}
+
+.palabra {
+    flex-basis: calc(50% - 10px); /* Esto define un tamaño base para cada input, dejando espacio para el gap */
+    flex-grow: 1; /* Permite que los elementos crezcan si hay espacio disponible */
+    min-width: 0; /* Esto asegura que los inputs se puedan achicar para no desbordarse */
+    margin: 0;
+    border: none;
+    border-bottom: 1px solid #000;
+    margin-bottom: 10px;
+    outline: none;
+    color:#6633CC;
+    background-color: transparent;
+}
+
+
+
+/* Opcional: Estilos adicionales para los inputs enfocados */
+.palabra:focus {
+    outline: none;
+    border-bottom: 2px solid #6633CC; /* Cambia el borde inferior al enfocar */
+}
+
+textarea:focus {
+    outline: none;
+    border: 2px solid #6633CC;
+    color: #6633CC;
+}
+
+
+.heart-with-date {
+    position: relative;
+    display: inline-block;
+}
+
+.heart-icon {
+    /* el estilo que ya tienes */
+}
+
+.date-text {
+    position: absolute;
+    margin-top:2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #6633CC; /* o cualquier color que se vea bien sobre el corazón */
+    font-size: 10px; /* ajusta el tamaño según el espacio disponible */
+    margin-top: -1px;
+    width: 12px;
+    background: transparent;
+}
+
+.date-text:focus {
+    outline: none;
+    border: none;
+}
+
+.page-number-container {
+    position: relative;
+    display: inline-block; /* o flex para centrarlo horizontalmente */
+    width: 30px; /* ancho del corazón */
+    height: 30px; /* alto del corazón */
+}
+
+.page-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color:#6633CC;
+    font-size: 11px;
+    z-index: 1;
+    margin-top: 2px;
+    margin-left: 2px;
+}
+
+.indice-page:hover {
+    cursor: pointer;
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: center;
+}

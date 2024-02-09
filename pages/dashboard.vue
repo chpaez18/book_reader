@@ -52,7 +52,7 @@
     <div class="flex flex-col md:flex-row gap-4 items-center">
       <!-- Primera columna -->
         <div class="card w-96 bg-base-100 h-[619px] bg-gray-100 w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full">
-              <h2 style="margin-left:-30px" class="self-center font-dela text-title text-left text-2xl pt-8 md:text-2xl xs:text-xl xs:text-center 1xs:text-xl"><Icon name="tabler:info-circle" class="mb-1" />Información</h2>
+              <h2 style="margin-left:-30px" class="self-center font-dela text-title text-left text-2xl pt-8 md:text-2xl xs:text-xl xs:text-center 1xs:text-xl"><Icon name="tabler:info-circle" class="mb-1" /> Información</h2>
               <br>
               <div class="self-center">
                 <DashboardInfoCard iconName="iconoir:multiple-pages" title="N° de páginas" isInfo=true total="100" style="color:white;"/>
@@ -100,7 +100,7 @@
   const { $userStore, $generalStore } = useNuxtApp()
   const user = $userStore.getUser()
   const userBookInfo = await $userStore.getUserBookInfo()
-  console.log(userBookInfo)
+  /*console.log(userBookInfo)*/
   const firstName = user.name.split(' ')[0]
   //const token = $userStore.getUserToken()
   const image = ref('/mockup2.png');

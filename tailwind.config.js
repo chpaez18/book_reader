@@ -18,7 +18,8 @@ module.exports = {
       },
       fontFamily: {
         dela: ['Dela Gothic One'],
-        blokletters: ['Blokletters Balpen']
+        blokletters: ['Blokletters Balpen'],
+        vibur: ['Vibur']
       },
       textColor: {
         'title': '#6633CC',

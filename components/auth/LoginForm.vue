@@ -31,7 +31,7 @@
                     type="text"
                     placeholder="Correo"
                   >
-                </div> 
+                </div>
                 <div class="mt-10">
                   <input
                     class="font-blokletters text-sm border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:border-primary-500 focus:ring-2 focus:ring-primary transition-all duration-300 ease-in-out"
@@ -86,7 +86,7 @@
 
   const router = useRouter();
   const { $userStore, $axios } = useNuxtApp()
-    
+
 
 /* $generalStore.setIsLogged(false)
 $userStore.resetUser() */

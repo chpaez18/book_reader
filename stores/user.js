@@ -54,6 +54,21 @@ export const useUserStore = defineStore('user', {
           })
           return res.data.data
         },
+        
+        async saveAnecdote(data, token = false) {
+            if (!token) {
+                token = this.$state.token;
+            }
+            
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            let res = await $axios.post('/book/save-anecdote', data, config);
+            return res.data.data;
+        },
       //--------------------------------------------------------------------------------------------------------
 
       //Local functions
