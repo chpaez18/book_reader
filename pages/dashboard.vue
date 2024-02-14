@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-  definePageMeta({ middleware: ['auth'] })
+  definePageMeta({ middleware: ['auth', 'buyer'] })
   const { $userStore, $generalStore } = useNuxtApp()
   const user = $userStore.getUser()
   const userBookInfo = await $userStore.getUserBookInfo()

@@ -7,7 +7,8 @@ export const useUserStore = defineStore('user', {
 
     state: () => ({
       data:'',
-      token: ''
+      token: '',
+      rol: '',
     }),
 
     actions: {
@@ -33,6 +34,7 @@ export const useUserStore = defineStore('user', {
               'Authorization': `Bearer ${token}`
             }
           })
+            this.setUserRol(res.data.data.rol)
           return res.data
         },
 
@@ -80,6 +82,10 @@ export const useUserStore = defineStore('user', {
         setUserToken(token) {
           this.$state.token = token
         },
+        
+        setUserRol(role) {
+          this.$state.rol = role
+        },
 
         getUser() {
           return this.$state.data
@@ -88,10 +94,15 @@ export const useUserStore = defineStore('user', {
         getUserToken() {
           return this.$state.token
         },
+        
+        getUserRol() {
+          return this.$state.rol
+        },
 
         resetUser() {
           this.$state.data = ''
           this.$state.token = ''
+          this.$state.rol = ''
         }
       //--------------------------------------------------------------------------------------------------------
     },

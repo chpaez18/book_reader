@@ -43,10 +43,12 @@
   const logout = async () => {
 
     const token = $userStore.getUserToken()
-    await $userStore.logout(token)
+
     $generalStore.setIsLogged(false)
-    $userStore.resetUser()
-    router.push('/auth/login');
+    $generalStore.setType('')
+	$userStore.resetUser()
+	await $userStore.logout(token)
+	  router.push('/auth/login');
 
   }
 </script>

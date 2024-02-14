@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-  definePageMeta({ middleware: ['auth'] })
+  definePageMeta({ middleware: ['auth', 'buyer'] })
   const { $userStore } = useNuxtApp()
   const userBookInfo = await $userStore.getUserBookInfo()
 </script>
