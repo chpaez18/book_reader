@@ -41,6 +41,9 @@
                 <br>
 	            <button @click="login()" class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="charm:sign-in" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión</button>
 
+	            <br>
+	            <br>
+	            <a href="/auth/login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="vaadin:arrow-backward" class="mr-2 mb-1 w-5 h-5" /> Regresar</button></a>
 <!--                <div class="block sm:flex justify-between items-center">
                     <div class="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
                         <input type="checkbox" id="remember" name="remember" class="checkbox checkbox-primary" />

@@ -5,6 +5,7 @@ export const useGeneralStore = defineStore('general', {
         isBackUrl: false,
         isLogged: false,
         type: '',
+        codeValidated: 0
     }),
     actions: {
       setIsLogged(value) {
@@ -13,6 +14,9 @@ export const useGeneralStore = defineStore('general', {
       setType(value) {
         this.$state.type = value
       },
+      setCodeValidated(value) {
+        this.$state.codeValidated = value
+      },
       
       getIsLogged() {
         return this.$state.isLogged
@@ -20,6 +24,10 @@ export const useGeneralStore = defineStore('general', {
       
       getType() {
         return this.$state.type
+      },
+      
+      getCodeValidated() {
+        return this.$state.codeValidated
       }
     },
     persist: true

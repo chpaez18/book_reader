@@ -59,7 +59,7 @@
                   <a :href="googleUrl" @click="login()"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button></a>
                   <br>
                   <br>
-	              <a href="/auth/admin-login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"> Iniciar sesión como administrador</button></a>
+	              <a href="/auth/admin-login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="charm:sign-in" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión como administrador</button></a>
                 </div>
 
                 <br>
