@@ -20,7 +20,7 @@
                       <br>
                       <br>
                       <div class="inline-block w-auto"> <!-- w-auto para que el ancho se ajuste al contenido -->
-                        <label class="font-blokletters p-1 px-4 border rounded-lg text-xl" :style="{backgroundColor:'#E00DA0', color:'white'}">{Nombre user}</label>
+                        <label class="w-full uppercase font-blokletters p-1 px-4 border rounded-lg text-xl" :style="{backgroundColor:'#E00DA0', color:'white'}">{{user.name}}</label>
                       </div>
                     </div>
                     <br>
@@ -160,11 +160,14 @@
 <script setup>
   import { PageFlip } from 'page-flip';
   import { ref, onMounted } from 'vue';
+  const { $userStore } = useNuxtApp()
 
   const props = defineProps({
     quotes: Array,
     userBookInfo: Array
   })
+
+  const user = $userStore.getUser()
 
 
   var flipController = ref(null);
