@@ -2,16 +2,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const { $generalStore, $userStore } = useNuxtApp()
     
     const rol = $userStore.getUserRol()
-    const  isLogged = $generalStore.getIsLogged()
+    const  type = $generalStore.getType()
 
-    if (isLogged) {
+    if (type == 'buyer') {
         if (rol == 'Buyer') {
-            return true
+            return
         } else  {
             return navigateTo('/error/accion-no-autorizada')
         }
+    } else if (rol == 'Admin') {
+        return navigateTo('/error/accion-no-autorizada')
     } else {
-        return navigateTo('/auth/login')
+        return false
     }
     
 })

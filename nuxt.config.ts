@@ -19,7 +19,8 @@ export default defineNuxtConfig({
     plugins: [
         { src: "~/plugins/jquery", mode: "client" },
         { src: '@/plugins/flipbook', mode: 'client' },
-        { src: '~/plugins/sweetalert2', mode: 'client' }
+        { src: '~/plugins/sweetalert2', mode: 'client' },
+        { src: '~/plugins/vue-good-table'}
     ],
     postcss: {
         plugins: {

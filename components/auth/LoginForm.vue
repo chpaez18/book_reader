@@ -56,7 +56,7 @@
                 <div class="button-m-primary">
                   <!-- <button @click=" $event => login() " class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button> -->
                   <!-- <button @click="signIn('google')" class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button> -->
-                  <a :href="googleUrl"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button></a>
+                  <a :href="googleUrl" @click="login()"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="tabler:brand-google" class="mr-2 mb-1 w-5 h-5" /> Iniciar sesión con google</button></a>
                   <br>
                   <br>
 	              <a href="/auth/admin-login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"> Iniciar sesión como administrador</button></a>
@@ -88,13 +88,17 @@
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
-  const { $userStore, $axios } = useNuxtApp()
+  const { $userStore, $axios, $generalStore} = useNuxtApp()
 
 
 /* $generalStore.setIsLogged(false)
 $userStore.resetUser() */
   //const google = await $axios.get('/auth/get-google-login-url')
   const googleUrl = await $userStore.getGoogleUrl()
+
+  function login() {
+	  $generalStore.setType('buyer');
+  }
 
 </script>
 
