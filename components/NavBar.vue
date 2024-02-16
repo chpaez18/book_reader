@@ -48,6 +48,8 @@
     $generalStore.setType('')
     $generalStore.setCodeValidated(0)
 
+	localStorage.removeItem("lastPage");
+
 	$userStore.resetUser()
 	await $userStore.logout(token)
 	  router.push('/auth/login');

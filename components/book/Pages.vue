@@ -1,7 +1,7 @@
 <template>
 
   <div v-if="typePage === 'Principal'" class="my-page">
-    <div class="relative" style="background-image: url(/book_images/fondo_2.png); width: 400px; height: 700px; padding: 8px">
+    <div class="relative" style="background-image: url(/book_images/wep/fondo_2.webp); width: 400px; height: 700px; padding: 8px">
 
       <div class="flex flex-col justify-between h-full rounded-sm p-4" >
 
@@ -37,7 +37,7 @@
   </div>
 
   <div v-else-if="typePage === 'Anecdota'" class="my-page">
-    <div class="relative" style="background-image: url(/book_images/fondo_1.png); width: 400px; height: 700px; padding: 8px">
+    <div class="relative" style="background-image: url(/book_images/wep/fondo_1.webp); width: 400px; height: 700px; padding: 8px">
       <div class="flex flex-col justify-between h-full rounded-sm p-4">
 
         <!-- Fecha y Mood -->
@@ -110,9 +110,10 @@
   </div>
 
 	<div v-if="isSaving" class="modal modal-open">
-		<div class="modal-box">
-			<h3 class="font-bold text-lg">Cargando</h3>
-			<p class="py-4">Subiendo tu anécdota, por favor espera...</p>
+		<div class="modal-box" style="text-align: -webkit-center">
+			<img src="/image_1.png" style="width: 50%">
+			<h3 class="my-custom-title-class font-blokletters  px-4 text-4xl text-center" style="color: #6633CC">Cargando...</h3>
+			<p class="text-sm text-gray-600 mt-4 leading-relaxed">Subiendo tu anécdota, por favor espera.</p>
 			<div class="modal-action">
 				<!-- Puedes colocar un botón para cerrar el modal si es necesario -->
 				<!-- <button class="btn" @click="isSaving = false">Cerrar</button> -->
@@ -220,7 +221,7 @@ function onFileChange(event, quoteId) {
 
 
 
-const handleSaveAnecdote = async () => {
+/*const handleSaveAnecdote = async () => {
 
 	isSaving.value = true;
 
@@ -273,8 +274,77 @@ const handleSaveAnecdote = async () => {
 		// Reactiva el botón de guardar independientemente del resultado de la solicitud
 		isSaving.value = false;
 	}
-};
+};*/
 
+const handleSaveAnecdote = () => {
+
+	isSaving.value = true;
+
+	const formData = new FormData();
+	formData.append('quote_id', props.quote.id);
+	formData.append('mood', mood.value);
+	formData.append('quote_description', anecdoteText.value);
+	formData.append('words', JSON.stringify(words.value));
+	formData.append('dates', JSON.stringify(dates.value));
+	formData.append('is_completed', 1);
+
+	if (imageStore.imageSrc[props.quote.id] && imageStore.imageLoaded[props.quote.id]) {
+		formData.append('image', imageStore.imageSrc[props.quote.id]);
+	}
+
+	// Llama a la función de guardado en segundo plano sin esperar a que termine
+	$userStore.saveAnecdote(formData).then(res => {
+		// Manejo de la respuesta exitosa
+		if (res) {
+			Swal.fire({
+				title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Genial!</span>',
+				html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Tu Anécdota ha sido guardada correctamente.</div>',
+				icon: 'success',
+				confirmButtonText: '¡Continuemos!',
+				didOpen: () => {
+					const confirmButton = document.querySelector('.swal2-confirm');
+					confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
+					confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
+					confirmButton.removeAttribute('style');
+
+					const customTitle = document.querySelector('.my-custom-title-class');
+					const customText = document.querySelector('.my-custom-text-class');
+
+					if (customTitle) customTitle.style.color = '#6633CC';
+
+				}
+			})
+		}
+	}).catch(error => {
+		// Manejo de errores
+		Swal.fire({
+			title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Ops!</span>',
+			html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Ocurrio un error guardando tu anecdota, intentalo de nuevo.</div>',
+			icon: 'warning',
+			confirmButtonText: '¡Continuemos!',
+			didOpen: () => {
+				const confirmButton = document.querySelector('.swal2-confirm');
+				confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
+				confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
+				confirmButton.removeAttribute('style');
+
+				const customTitle = document.querySelector('.my-custom-title-class');
+				const customText = document.querySelector('.my-custom-text-class');
+
+				if (customTitle) customTitle.style.color = '#6633CC';
+
+			}
+		})
+	}).finally(() => {
+
+
+		// Si necesitas realizar alguna acción después de enviar los datos (como reiniciar estados), hazlo aquí
+		isSaving.value = false;
+	});
+
+
+
+};
 
 
 

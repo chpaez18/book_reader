@@ -1,8 +1,10 @@
+
 #book-container {
     position: relative;
     width: 100%; /* Usa el 100% del viewport o ajusta según sea necesario */
     height: 839px; /* Ajusta la altura al viewport para evitar el scroll */
     overflow: hidden; /* Oculta cualquier desbordamiento */
+
 }
 
 #book {
@@ -12,7 +14,7 @@
     transform: translate(-50%, -50%); /* Centra el libro */
     width: 400px; /* Ancho del libro */
     height: 700px; /* Altura del libro */
-
+    visibility: hidden;
 }
 
 
@@ -129,4 +131,15 @@ textarea:focus {
     height: 100%;
     object-fit: fill;
     object-position: center;
+}
+.progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #E00DA0;
+    width: 0%; /* Inicialmente el progreso está en 0% */
+    transition: width 0.5s ease-in-out; /* Hace que el cambio de ancho sea suave */
 }

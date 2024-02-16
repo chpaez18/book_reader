@@ -1,17 +1,16 @@
 <template>
   <div id="book-container">
-
     <div id="book" style="margin-top: 140px">
 
         <!-- PORTADA  -->
           <div class="my-page" data-density="hard">
-              <img src="/book_images/portada.png">
+              <img src="/book_images/wep/portada.webp">
           </div>
         <!-- PORTADA  -->
 
         <!-- PRIMERAS PALABRAS  -->
           <div class="my-page">
-            <div class="relative" style="background-image: url(/book_images/fondo_1.png); width: 400px; height: 700px; padding: 8px">
+            <div class="relative" style="background-image: url(/book_images/wep/fondo_1.webp); width: 400px; height: 700px; padding: 8px">
               <div class="flex flex-col justify-between h-full rounded-sm p-4">
                 <div class="md:flex">
                   <div class="w-full p-4">
@@ -43,7 +42,7 @@
           </div>
 
           <div class="my-page">
-            <div class="relative" style="background-image: url(/book_images/fondo_2.png); width: 400px; height: 700px; padding: 8px">
+            <div class="relative" style="background-image: url(/book_images/wep/fondo_2.webp); width: 400px; height: 700px; padding: 8px">
               <div class="flex flex-col justify-between h-full rounded-sm p-4">
                 <div class="md:flex">
                   <div class="w-full p-4">
@@ -70,7 +69,7 @@
 
         <!-- INDICE  -->
           <div class="my-page">
-            <div class="relative" style="background-image: url(/book_images/fondo_1.png); width: 400px; height: 700px; padding: 8px">
+            <div class="relative" style="background-image: url(/book_images/wep/fondo_1.webp); width: 400px; height: 700px; padding: 8px">
               <div class="flex flex-col justify-between h-full rounded-sm p-4">
                 <!-- Input para el título del plan -->
                 <label class="font-blokletters  px-4  text-xl text-center" :style="{color:'#6633CC'}">Check de</label>
@@ -79,14 +78,7 @@
                 </div>
 
                 <div class="grid grid-cols-10 gap-4 p-4" style="margin-top: 20px; margin-bottom: 60px; padding: 0px">
-                  <!-- Ciclo para generar los corazones -->
-                  <div v-for="n in 100" :key="n" class="w-full relative">
-                    <Icon name="material-symbols-light:favorite-outline-rounded" class="mb-1 h-6 w-6 text-pink-500" :style="{width: '36px', height: '36px'}"/>
-                    <div class="absolute inset-0 flex items-center justify-center">
-                      <!-- Pasa el índice actual 'n' a la función goToPage -->
-                      <span @click.capture="() => goToPage(n)" class="text-black primary indice-page" style="font-size: 9px; margin-left: 16px; margin-top: -1px">{{ n }}</span>
-                    </div>
-                  </div>
+	                <BookIndice :goToPageFn="goToPage"/>
                 </div>
 
               </div>
@@ -107,7 +99,7 @@
 
         <!-- ULTIMAS PALABRAS  -->
           <div class="my-page">
-            <div class="relative" style="background-image: url(/book_images/fondo_2.png); width: 400px; height: 700px; padding: 8px">
+            <div class="relative" style="background-image: url(/book_images/wep/fondo_2.webp); width: 400px; height: 700px; padding: 8px">
               <div class="flex flex-col justify-between h-full rounded-sm p-4">
                 <div class="md:flex">
                   <div class="w-full p-4">
@@ -150,11 +142,23 @@
 
         <!-- CONTRAPORTADA  -->
           <div class="my-page" data-density="hard">
-            <div class="relative" style="background-image: url(/book_images/contraportada.png); width: 400px; height: 700px; padding: 8px">
+            <div class="relative" style="background-image: url(/book_images/wep/contraportada.webp); width: 400px; height: 700px; padding: 8px">
             </div>
           </div>
         <!-- FIN CONTRAPORTADA  -->
     </div>
+
+<!--	  <div v-if="isLoading" class="modal modal-open">
+		  <div class="modal-box" style="text-align: -webkit-center">
+			  <img src="/image_1.png" style="width: 50%">
+			  <h3 class="my-custom-title-class font-blokletters  px-4 text-4xl text-center" style="color: #6633CC">Cargando...</h3>
+			  <p class="text-sm text-gray-600 mt-4 leading-relaxed">Porfavor, espera mientras cargamos el libro.</p>
+		  </div>
+	  </div>-->
+	  <div v-if="isLoading" class="progress-bar-container">
+		  <div class="progress-bar" style="width: 0%;"></div>
+	  </div>
+
   </div>
 </template>
 
@@ -174,8 +178,23 @@
 
 
   var flipController = ref(null);
+  const isLoading = ref(true);
+
+
 
   onMounted(() => {
+
+	  let progress = 0;
+	  const interval = setInterval(() => {
+		  if (progress < 100) {
+			  progress += 5; // Incrementa el progreso en 5%
+			  document.querySelector('.progress-bar').style.width = `${progress}%`;
+		  } else {
+			  clearInterval(interval);
+			  isLoading.value = false;
+			  document.querySelector('#book').style.visibility = 'visible';
+		  }
+	  }, 95); // Actualiza el progreso cada 100ms
 
     // Inicializamos el libro
     //--------------------------------------------------------------------------------
@@ -234,15 +253,35 @@
         });
     //--------------------------------------------------------------------------------
 
+	// Verificamos la ultima pagina que visito el usuario
+	//--------------------------------------------------------------------------------
+		const lastPage = localStorage.getItem('lastPage');
+		if (lastPage) {
+			flipController.flipToPage(parseInt(lastPage) - 2); // Ajusta según cómo manejes la numeración de páginas
+		}
+	//--------------------------------------------------------------------------------
+
+	// Guardamos la ultima pagina que visito el usuario
+	//--------------------------------------------------------------------------------
+		  pageFlip.on('flip', (e) => {
+			  const currentPage = e.data; // Obtiene la página actual
+			  localStorage.setItem('lastPage', currentPage + 2);
+		  });
+	//--------------------------------------------------------------------------------
+
+
+
 });
 
   const goToPage = (quoteNumber) => {
     // Calcula el número de página para la cita principal
     const pageNumber = 5 + (quoteNumber - 1) * 2;
+	  localStorage.setItem('lastPage', pageNumber); // Almacena el número de la última página
     flipController.flipToPage(pageNumber - 2); // -1 porque las páginas suelen empezar en 0
   };
 
   const goToIndice = () => {
+	  localStorage.setItem('lastPage', 6); // Almacena el número de la última página
 	  flipController.flipToPage(3); // -1 porque las páginas suelen empezar en 0
   };
 
