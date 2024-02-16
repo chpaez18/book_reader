@@ -97,10 +97,11 @@
         <!-- CITAS  -->
           <div v-for="(quote, index) in quotes" :key="index">
             <!-- El número de página es (index * 2) + 1 -->
-            <BookPages typePage="Principal" :title="quote.first_title" :subTitle="quote.second_title" :quote="quote" :pageNumber="(index * 2) + 1" />
+            <BookPages typePage="Principal" :title="quote.first_title" :subTitle="quote.second_title" :quote="quote" :pageNumber="(index * 2) + 1" :goToPageFn="goToIndice"/>
 
             <!-- El número de página es (index * 2) + 2 -->
-            <BookPages typePage="Anecdota" :pageNumber="(index * 2) + 2" :quote="quote" :userBookInfo="userBookInfo"/>
+            <BookPages typePage="Anecdota" :pageNumber="(index * 2) + 2" :quote="quote" :userBookInfo="userBookInfo" :goToPageFn="goToIndice"/>
+
           </div>
         <!-- FIN CITAS  -->
 
@@ -166,6 +167,8 @@
     quotes: Array,
     userBookInfo: Array
   })
+
+
 
   const user = $userStore.getUser()
 
@@ -236,7 +239,11 @@
   const goToPage = (quoteNumber) => {
     // Calcula el número de página para la cita principal
     const pageNumber = 5 + (quoteNumber - 1) * 2;
-    flipController.flipToPage(pageNumber - 1); // -1 porque las páginas suelen empezar en 0
+    flipController.flipToPage(pageNumber - 2); // -1 porque las páginas suelen empezar en 0
+  };
+
+  const goToIndice = () => {
+	  flipController.flipToPage(3); // -1 porque las páginas suelen empezar en 0
   };
 
 </script>

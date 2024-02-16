@@ -111,6 +111,34 @@ export const useUserStore = defineStore('user', {
             let res = await $axios.post('/code/validate-code', {code:code}, config);
             return res.data.data;
         },
+        async generateCode(data, token = false) {
+            if (!token) {
+                token = this.$state.token;
+            }
+            
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            let res = await $axios.post('/code/generate', data, config);
+            return res.data.data;
+        },
+        async deleteCode(id, token = false) {
+            if (!token) {
+                token = this.$state.token;
+            }
+            
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            
+            let res = await $axios.delete('/code/delete/'+id, config);
+            return res.data.data;
+        },
       //--------------------------------------------------------------------------------------------------------
 
       //Local functions

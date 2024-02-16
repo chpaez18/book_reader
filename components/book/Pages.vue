@@ -6,26 +6,31 @@
       <div class="flex flex-col justify-between h-full rounded-sm p-4" >
 
         <!-- Input para el título del plan -->
-        <label class="font-blokletters  px-4 text-xl text-center" :style="{color:'#6633CC'}">{{props.title}}</label>
-        <div class="relative text-center">
-          <label class="font-vibur text-title primary inline-block text-5xl uppercase">{{props.subTitle}}</label>
+
+	      <label class="font-blokletters text-xl text-center label-adjustable" :style="{color:'white', backgroundColor:'#E00DA0', paddingTop:'4px', paddingBottom:'4px', paddingLeft:'8px', paddingRight:'8px', borderRadius:'14px', marginBottom:'-27px', width:'100%', marginTop:'24px'}">{{ props.title }}</label>
+
+	      <div class="relative text-center">
+          <label class="font-vibur text-title primary inline-block text-5xl uppercase" >{{props.subTitle}}</label>
         </div>
 
         <!-- Área para subir imagen con label "Mensaje" -->
-	      <div class="flex flex-col items-center justify-center w-full h-full max-h-96 border-2 border-solid" :style="{borderColor:'#E00DA0'}">
+	      <div class="flex flex-col items-center justify-center w-full h-full max-h-96 border-2 border-solid" :style="{borderColor:'#E00DA0', marginTop:'-38px'}">
 		      <input type="file" :id="`imageUpload-${quote.id}`" class="hidden" @change="onFileChange($event, quote.id)" />
 		      <label :for="`imageUpload-${quote.id}`" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
 			      <!-- Muestra la imagen cargada por el usuario o la imagen de la anécdota si existe -->
 			      <img v-if="imageStore.imageSrc[quote.id]" :src="imageStore.imageSrc[quote.id]" class="image-preview" />
 			      <!-- Muestra el icono de la cámara si no hay imagen seleccionada -->
 			      <img v-else style="width: 35px; height: 35px" src="/book_images/camara.svg">
+			      <label v-if="!imageStore.imageSrc[quote.id]" class="font-blokletters text-paragraph mt-1" style="font-size: 16px">{{quote.message}}</label>
 		      </label>
 	      </div>
 
         <!-- Icono de corazón (indicador numero de pagina) -->
+	      <button  @mousedown.stop @mouseup.stop @click.stop @click.capture="() => goToPageFn()" class="text-black primary indice-page" style="font-size: 9px; margin-left: 16px; margin-top: -1px"><Icon name="mdi:format-list-bulleted" style="width: 25px; height: 25px; color: #E00DA0;"/></button>
         <div class="page-number-container self-center">
           <Icon name="material-symbols-light:favorite-outline-rounded" style="width: 35px; height: 35px; color: #E00DA0;"/>
           <button class="page-number">{{props.pageNumber}}</button>
+
         </div>
       </div>
     </div>
@@ -116,10 +121,13 @@
 	</div>
 </template>
 
+
 <script setup>
 import { ref } from 'vue';
 import Swal from 'sweetalert2';
 import { useImageStore } from '~/stores/imageStore';
+import StPageFlip from '/components/StPageFlip.vue';
+
 const { $userStore, $axios, $swal } = useNuxtApp()
 
 const imageStore = useImageStore();
@@ -131,8 +139,21 @@ const props = defineProps({
   subTitle: '',
   pageNumber: '',
   quote: Object,
-  userBookInfo: Array
+  userBookInfo: Array,
+	goToPageFn: Function
 })
+
+const stPageFlipRef = ref(null);
+
+const accessChildMethod = () => {
+	if (stPageFlipRef.value) {
+		stPageFlipRef.value.goToIndice(3); // Acceder al método goToPage() del componente hijo
+	}
+};
+
+onMounted(() => {
+	accessChildMethod();
+});
 
 const loadImage = ref('');
 const mood = ref('');
@@ -197,6 +218,8 @@ function onFileChange(event, quoteId) {
 	}
 }
 
+
+
 const handleSaveAnecdote = async () => {
 
 	isSaving.value = true;
@@ -255,5 +278,15 @@ const handleSaveAnecdote = async () => {
 
 
 
-
 </script>
+
+<style scoped>
+.label-adjustable {
+	display: inline-block;
+	max-width: max-content;
+	white-space: normal;
+	word-wrap: break-word;
+	line-height: 1.2;
+	place-self: center;
+}
+</style>
