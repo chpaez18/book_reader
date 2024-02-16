@@ -68,7 +68,7 @@
         <!-- FIN PRIMERAS PALABRAS  -->
 
         <!-- INDICE  -->
-          <div class="my-page">
+          <div class="my-page indice">
             <div class="relative" style="background-image: url(/book_images/wep/fondo_1.webp); width: 400px; height: 700px; padding: 8px">
               <div class="flex flex-col justify-between h-full rounded-sm p-4">
                 <!-- Input para el título del plan -->
@@ -78,7 +78,7 @@
                 </div>
 
                 <div class="grid grid-cols-10 gap-4 p-4" style="margin-top: 20px; margin-bottom: 60px; padding: 0px">
-	                <BookIndice :goToPageFn="goToPage"/>
+	                <BookIndice :goToPageFn="goToPage" :userBookInfo="userBookInfo" :quotes="quotes"/>
                 </div>
 
               </div>
@@ -184,17 +184,22 @@
 
   onMounted(() => {
 
-	  let progress = 0;
-	  const interval = setInterval(() => {
-		  if (progress < 100) {
-			  progress += 5; // Incrementa el progreso en 5%
-			  document.querySelector('.progress-bar').style.width = `${progress}%`;
-		  } else {
-			  clearInterval(interval);
-			  isLoading.value = false;
-			  document.querySelector('#book').style.visibility = 'visible';
-		  }
-	  }, 95); // Actualiza el progreso cada 100ms
+	  // Establecemos una barra de progreso mientras el libro se termina de cargar por completo
+	  //--------------------------------------------------------------------------------
+		  let progress = 0;
+		  const interval = setInterval(() => {
+			  if (progress < 100) {
+				  progress += 5; // Incrementa el progreso en 5%
+				  document.querySelector('.progress-bar').style.width = `${progress}%`;
+			  } else {
+				  clearInterval(interval);
+				  isLoading.value = false;
+				  document.querySelector('#book').style.visibility = 'visible';
+			  }
+		  }, 95); // Actualiza el progreso cada 100ms
+	  //--------------------------------------------------------------------------------
+
+
 
     // Inicializamos el libro
     //--------------------------------------------------------------------------------
@@ -270,8 +275,13 @@
 	//--------------------------------------------------------------------------------
 
 
-
 });
+
+  function generateAndStoreIndice() {
+	  const indiceContainer = document.querySelector('.indice'); // Asegúrate de que este selector apunte al contenedor correcto de tu índice
+	  const indexHTML = indiceContainer.innerHTML;
+	  localStorage.setItem('pageIndexHTML', indexHTML);
+  }
 
   const goToPage = (quoteNumber) => {
     // Calcula el número de página para la cita principal

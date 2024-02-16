@@ -41,16 +41,48 @@
 		      </div>
 
 		      <!-- Tercera columna -->
-		        <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full" style="max-height: 500px;height: 500px;background-image: url('/mockup2.png');background-size: 188%;background-repeat: no-repeat;background-position: center;">
-		        </div>
+<!--		        <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full" style="max-height: 500px;height: 500px;background-image: url('/mockup2.png');background-size: 188%;background-repeat: no-repeat;background-position: center;">
+		        </div>-->
+	            <div class="w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full">
+<!--		            <Carousel id="gallery" :items-to-show="1" :wrap-around="false" v-model="currentSlide">
+
+			            <Slide v-for="(item, index) in userBookPhotos" :key="index">
+				            <img class="carousel__item" @click="slideTo(index)" :src="item.url_view" style="max-height: 400px; height: 400px; max-width: 400px; width: 400px">
+			            </Slide>
+		            </Carousel>
+<br>
+<br>
+		            <Carousel
+				            id="thumbnails"
+				            :items-to-show="4"
+				            :wrap-around="true"
+				            v-model="currentSlide"
+				            ref="carousel"
+		            >
+
+			            <Slide v-for="(item, index) in userBookPhotos" :key="index">
+				            <img class="carousel__item" @click="slideTo(index)" :src="item.url_view" style="max-height: 100px; height: 100px; max-width: 100px; width: 100px">
+			            </Slide>
+		            </Carousel>-->
+		            <Carousel :autoplay="2000" :wrap-around="true">
+
+			            <Slide :key="999">
+				            <img class="carousel__item" src="/mockup2.png" style="max-height: 400px; height: 400px; max-width: 400px; width: 400px">
+			            </Slide>
+			            <Slide v-for="(item, index) in userBookPhotos" :key="index">
+
+				            <img decoding="async" class="carousel__item" :src="item.url_view" style="max-height: 400px; height: 400px; max-width: 400px; width: 400px">
+			            </Slide>
+
+			            <template #addons>
+<!--				            <Navigation />-->
+			            </template>
+		            </Carousel>
+	            </div>
+
             </div>
         </div>
-	    <swiper-container>
-		    <swiper-slide>Slide 1</swiper-slide>
-		    <swiper-slide>Slide 2</swiper-slide>
-		    <swiper-slide>Slide 3</swiper-slide>
-		    ...
-	    </swiper-container>
+
 	</section>
 
   </NuxtLayout>
@@ -59,12 +91,23 @@
 
 <script setup>
 import { ref } from 'vue';
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+
+const currentSlide = ref(0)
+const userBookPhotos = ref([]);
+
+function slideTo(val) {
+	this.currentSlide = val
+}
+
 
   definePageMeta({ middleware: ['auth', 'buyer'] })
   const { $userStore, $generalStore } = useNuxtApp()
   const user = $userStore.getUser()
   const userBookInfo = await $userStore.getUserBookInfo()
-  /*console.log(userBookInfo)*/
+  userBookPhotos.value = userBookInfo.user_book_info.map(info => info.photo).filter(photo => photo != null);
+
   const firstName = user.name.split(' ')[0]
   //const token = $userStore.getUserToken()
   const image = ref('/mockup2.png');
