@@ -2,7 +2,7 @@
   <NuxtLayout name="dashboard">
     <div class="dark-overlay"></div> <!-- Superposición oscura -->
     <section class="flex items-center justify-center">
-      <StPageFlip :quotes="userBookInfo.quotes" :userBookInfo="userBookInfo.user_book_info" />
+      <StPageFlip :quotes="userBookInfo.quotes" />
     </section>
   </NuxtLayout>
 </template>
@@ -11,6 +11,8 @@
   definePageMeta({ middleware: ['auth', 'buyer'] })
   const { $userStore } = useNuxtApp()
   const userBookInfo = await $userStore.getUserBookInfo()
+  $userStore.setUserBookInfo(userBookInfo.user_book_info);
+
 </script>
 
 <style>

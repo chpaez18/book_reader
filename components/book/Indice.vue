@@ -2,14 +2,14 @@
 	<div v-for="n in 100" :key="n" class="w-full relative">
 		<div v-if="isCompleted(n)">
 <!--			si la cita esta completa, mostramos un icono diferente-->
-			<Icon name="material-symbols-light:favorite-outline-rounded" class="mb-1 h-6 w-6" :style="{width: '36px', height: '36px', color:'#6633CC'}"/>
-			<div class="absolute inset-0 flex items-center justify-center rayado">
+			<Icon :id="`icon-${n}`" name="material-symbols-light:favorite-outline-rounded" class="mb-1 h-6 w-6" :style="{width: '36px', height: '36px', color:'#6633CC'}"/>
+			<div :id="n" class="absolute inset-0 flex items-center justify-center rayado">
 				<span @click.capture="() => goToPageFn(n)" class="text-black primary indice-page" style="font-size: 9px; margin-left: 16px; margin-top: -1px">{{ n }}</span>
 			</div>
 		</div>
 		<div v-else>
-			<Icon name="material-symbols-light:favorite-outline-rounded" class="mb-1 h-6 w-6 text-pink-500" :style="{width: '36px', height: '36px'}"/>
-			<div class="absolute inset-0 flex items-center justify-center">
+			<Icon :id="`icon-${n}`" name="material-symbols-light:favorite-outline-rounded" class="mb-1 h-6 w-6 text-pink-500" :style="{width: '36px', height: '36px'}"/>
+			<div :id="n" class="absolute inset-0 flex items-center justify-center">
 				<!-- Pasa el índice actual 'n' a la función goToPage -->
 				<span @click.capture="() => goToPageFn(n)" class="text-black primary indice-page" style="font-size: 9px; margin-left: 16px; margin-top: -1px">{{ n }}</span>
 			</div>
@@ -18,12 +18,38 @@
 </template>
 
 <script setup>
+import { useIndexStore } from '~/stores/indexStore';
+import { watch } from 'vue';
+
 const props = defineProps({
 	key: '',
 	goToPageFn: Function,
 	userBookInfo: Array,
 	quotes: Array
 })
+
+const indexStore = useIndexStore();
+
+
+watch(() => indexStore.refreshIndexId, (newId) => {
+	if (newId !== null) {
+		// Aquí actualizamos solo el elemento con el ID específico
+		const elementToUpdate = document.getElementById(newId);
+		const elementIcon = document.getElementById('icon-' + newId);
+
+		if (elementToUpdate) {
+			elementToUpdate.classList.add('rayado');
+		}
+
+		if (elementIcon) {
+			elementIcon.style.color = '#6633CC';
+		}
+
+
+		indexStore.resetRefreshIndex();
+	}
+});
+
 
 const isCompleted = (n) => {
 

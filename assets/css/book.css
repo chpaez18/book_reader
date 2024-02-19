@@ -109,13 +109,31 @@ textarea:focus {
     width: 30px; /* ancho del corazón */
     height: 30px; /* alto del corazón */
 }
+.page-number-anecdote-container {
+    position: relative;
+    display: inline-block; /* o flex para centrarlo horizontalmente */
+    width: 50%; /* ancho del corazón */
+    height: 30px; /* alto del corazón */
+}
+.btn-outline:hover {
+    color: white;
+    background-color: #e729b0;
+    border-color: #ef02a5;
+}
+.btn-custom {
+    position: absolute;
+    color:#E00DA0;
+    font-size: 11px;
+    z-index: 1;
+    margin-top: -12px;
+}
 
 .page-number {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color:#6633CC;
+    color:#E00DA0;
     font-size: 11px;
     z-index: 1;
     margin-top: 2px;
@@ -138,7 +156,7 @@ textarea:focus {
 }
 
 .progress-bar {
-    height: 8px;
+    height: 2px;
     background-color: #E00DA0;
     width: 0%; /* Inicialmente el progreso está en 0% */
     transition: width 0.5s ease-in-out; /* Hace que el cambio de ancho sea suave */

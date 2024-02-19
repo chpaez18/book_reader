@@ -89,10 +89,10 @@
         <!-- CITAS  -->
           <div v-for="(quote, index) in quotes" :key="index">
             <!-- El número de página es (index * 2) + 1 -->
-            <BookPages typePage="Principal" :title="quote.first_title" :subTitle="quote.second_title" :quote="quote" :pageNumber="(index * 2) + 1" :goToPageFn="goToIndice"/>
+            <BookPages typePage="Principal" :title="quote.first_title" :subTitle="quote.second_title" :quote="quote" :pageNumber="(index + 1)" :goToPageFn="goToIndice"/>
 
             <!-- El número de página es (index * 2) + 2 -->
-            <BookPages typePage="Anecdota" :pageNumber="(index * 2) + 2" :quote="quote" :userBookInfo="userBookInfo" :goToPageFn="goToIndice"/>
+            <BookPages typePage="Anecdota" :pageNumber="(index * 2) + 2" :quote="quote" :goToPageFn="goToIndice"/>
 
           </div>
         <!-- FIN CITAS  -->
@@ -169,7 +169,6 @@
 
   const props = defineProps({
     quotes: Array,
-    userBookInfo: Array
   })
 
 
@@ -180,6 +179,7 @@
   var flipController = ref(null);
   const isLoading = ref(true);
 
+  const userBookInfo = $userStore.getUserBookInfoStore();
 
 
   onMounted(() => {

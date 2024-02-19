@@ -25,8 +25,14 @@
 		      </label>
 	      </div>
 
-        <!-- Icono de corazón (indicador numero de pagina) -->
-	      <button  @mousedown.stop @mouseup.stop @click.stop @click.capture="() => goToPageFn()" class="text-black primary indice-page" style="font-size: 9px; margin-left: 16px; margin-top: -1px"><Icon name="mdi:format-list-bulleted" style="width: 25px; height: 25px; color: #E00DA0;"/></button>
+	      <!-- boton de indice-->
+	      <div style="align-self: center;">
+		      <button  @mousedown.stop @mouseup.stop @click.stop @click.capture="() => goToPageFn()" class="text-black primary indice-page" style="font-size: 9px; margin-top: -10px"><Icon name="mdi:format-list-bulleted" style="width: 25px; height: 25px; color: #E00DA0;"/></button>
+<!--		      <button v-if="canShares[quote.id]" :id="`btn-share-${quote.id}`" @mousedown.stop @mouseup.stop @click.stop @click.capture="() => shareViaWebShare(quote.id)" class="text-black primary indice-page" style="font-size: 9px; margin-top: -10px; margin-left: 20px"><Icon name="fa6-brands:instagram" style="width: 25px; height: 25px; color: #E00DA0;"/></button>
+		      <button v-if="canShares[quote.id]" :id="`btn-share-${quote.id}`" @mousedown.stop @mouseup.stop @click.stop @click.capture="() => shareViaWebShare(quote.id)" class="text-black primary indice-page" style="font-size: 9px; margin-top: -10px; margin-left: 20px"><Icon name="fa6-brands:tiktok" style="width: 19px; height: 19px; color: #E00DA0;"/></button>-->
+	      </div>
+
+	      <!-- Icono de corazón (indicador numero de pagina) -->
         <div class="page-number-container self-center">
           <Icon name="material-symbols-light:favorite-outline-rounded" style="width: 35px; height: 35px; color: #E00DA0;"/>
           <button class="page-number">{{props.pageNumber}}</button>
@@ -100,10 +106,20 @@
         </div>
 
         <!-- Icono de corazón (indicador numero de pagina) -->
-        <div class="page-number-container self-center">
-          <Icon name="material-symbols-light:favorite-outline-rounded" style="width: 35px; height: 35px; color: #E00DA0;"/>
-          <button class="page-number" :disabled="isSaving" @click="handleSaveAnecdote()">{{ props.pageNumber }}</button>
-        </div>
+<!--	      <div class="flex-heart items-center gap-2">
+		      <Icon name="material-symbols-light:favorite-outline-rounded" class="icon-heart-anecdote"/>
+		      <span class="page-number-anecdote">{{ props.pageNumber }}</span>
+		      <Icon name="mdi:arrow-left" class="icon-arrow-anecdote"/>
+		      <span class="text-instruction primary" style="color:#6633CC;">click aquí para guardar</span>
+	      </div>-->
+	      <div class="page-number-anecdote-container self-center mt-3">
+		      <button class="btn btn-outline btn-custom w-full font-blokletters text-xl" style="font-size: 13px" :disabled="isSaving" @click="handleSaveAnecdote()">Guardar Cita</button>
+	      </div>
+<!--	      <div class="page-number-container self-center">
+		      <Icon name="material-symbols-light:favorite-outline-rounded" style="width: 35px; height: 35px; color: #E00DA0;"/>
+		      <button class="page-number" :disabled="isSaving" @click="handleSaveAnecdote()">{{ props.pageNumber }}</button>
+	      </div>-->
+
 
       </div>
     </div>
@@ -124,15 +140,21 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import {ref, computed, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { useImageStore } from '~/stores/imageStore';
-import StPageFlip from '/components/StPageFlip.vue';
+import { useIndexStore } from '~/stores/indexStore';
 
-const { $userStore, $axios, $swal } = useNuxtApp()
 
+const { $userStore } = useNuxtApp()
 const imageStore = useImageStore();
+const indexStore = useIndexStore();
+
+const userBookInfo = $userStore.getUserBookInfoStore();
+
+
 const isSaving = ref(false);
+
 
 const props = defineProps({
   typePage: '',
@@ -140,11 +162,31 @@ const props = defineProps({
   subTitle: '',
   pageNumber: '',
   quote: Object,
-  userBookInfo: Array,
 	goToPageFn: Function
 })
 
 const stPageFlipRef = ref(null);
+const canShares = ref({});
+
+/*async function shareViaWebShare(quoteId) {
+	const record = $userStore.getUserBookInfoStoreById(quoteId);
+	await fetch('https://drive.google.com/thumbnail?id=1E5kXyXw7SkGlcxoIsXvE8nP-KH-Gz9Ar&sz=w1000')
+			.then(res => res.blob())
+			.then(blob => {
+				console.log(blob)
+			})
+			.catch(error => console.error('Error al cargar la imagen:', error));
+
+	if (navigator.share) {
+		navigator.share({
+			files: [new File([blob], "test.jpg", { type: 'image/jpeg' })],
+		}).then(() => console.log('Compartido con éxito'))
+				.catch(error => console.error('Error al compartir', error));
+	} else {
+		// Fallback para navegadores que no soportan la API
+		console.log('Web Share API no es soportada en este navegador.');
+	}
+}*/
 
 const accessChildMethod = () => {
 	if (stPageFlipRef.value) {
@@ -166,12 +208,11 @@ const dates = ref({
   year: ''
 });
 
-const matchedAnecdote = ref(null);
 const imageSrc = ref({});
 
 watch(() => props.quote, (newQuote) => {
-	if (props.userBookInfo && Array.isArray(props.userBookInfo)) {
-		const foundAnecdote = props.userBookInfo.find((anecdote) => anecdote.quote_id === newQuote.id);
+	if (userBookInfo && Array.isArray(userBookInfo)) {
+		const foundAnecdote = userBookInfo.find((anecdote) => anecdote.quote_id === newQuote.id);
 		if (foundAnecdote) {
 			// Establecer los valores de la anécdota encontrada
 			mood.value = foundAnecdote.mood;
@@ -196,7 +237,12 @@ watch(() => props.quote, (newQuote) => {
 	}
 }, { immediate: true });
 
-
+//Este watch se encarga de evaluar y mostrar los iconos de compartir en redes sociales, descomentar si en algun futuro se cambia la forma de almacenar las imagenes a un servicio externo
+/*watch(() => $userStore.getUserBookInfoStore(), (userBookInfo) => {
+	userBookInfo.forEach(anecdote => {
+		canShares.value[anecdote.quote_id] = !!anecdote && anecdote.is_completed;
+	});
+}, { deep: true, immediate: true });*/
 
 function resetInputs() {
 	mood.value = '';
@@ -218,6 +264,20 @@ function onFileChange(event, quoteId) {
 		imageStore.setImageLoaded(quoteId, true);
 	}
 }
+
+const isDateComplete = computed(() => {
+	// Asumiendo que quieres una fecha completa con día, mes y año
+	return dates.value.day.length === 2 && dates.value.month.length === 2 && dates.value.year.length === 2;
+});
+
+const isDateValid = computed(() => {
+	// Aquí puedes agregar validaciones adicionales para asegurarte de que la fecha sea válida
+	// Por ejemplo, que el día sea entre 1 y 31 y el mes entre 1 y 12
+	const day = parseInt(dates.value.day);
+	const month = parseInt(dates.value.month);
+	const year = parseInt(dates.value.year);
+	return day > 0 && day < 32 && month > 0 && month < 13 && year >= 0;
+});
 
 
 
@@ -276,7 +336,19 @@ function onFileChange(event, quoteId) {
 	}
 };*/
 
+
+
 const handleSaveAnecdote = () => {
+
+	if (!isDateComplete.value && !isDateValid.value) {
+		alert('Debes indicar un fecha');
+		return;
+	}
+
+	if (mood.value === '') {
+		alert('Debes seleccionar un mood')
+		return;
+	}
 
 	isSaving.value = true;
 
@@ -314,8 +386,13 @@ const handleSaveAnecdote = () => {
 
 				}
 			})
+
+			//actualizamos el store con la nueva anecdota
+			$userStore.updateUserBookInfo(res)
+			indexStore.refreshIndex(props.quote.id);
 		}
 	}).catch(error => {
+		console.log(error)
 		// Manejo de errores
 		Swal.fire({
 			title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Ops!</span>',
@@ -336,13 +413,9 @@ const handleSaveAnecdote = () => {
 			}
 		})
 	}).finally(() => {
-
-
 		// Si necesitas realizar alguna acción después de enviar los datos (como reiniciar estados), hazlo aquí
 		isSaving.value = false;
 	});
-
-
 
 };
 
@@ -359,4 +432,5 @@ const handleSaveAnecdote = () => {
 	line-height: 1.2;
 	place-self: center;
 }
+
 </style>

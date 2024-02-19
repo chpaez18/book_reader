@@ -51,6 +51,8 @@
 	localStorage.removeItem("lastPage");
 
 	$userStore.resetUser()
+	$userStore.resetUserBookInfoStore()
+
 	await $userStore.logout(token)
 	  router.push('/auth/login');
 

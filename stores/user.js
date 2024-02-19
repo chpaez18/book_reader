@@ -9,6 +9,7 @@ export const useUserStore = defineStore('user', {
       data:'',
       token: '',
       rol: '',
+      userBookInfo: []
     }),
 
     actions: {
@@ -154,7 +155,32 @@ export const useUserStore = defineStore('user', {
         setUserRol(role) {
           this.$state.rol = role
         },
-
+        
+        setUserBookInfo(info) {
+            this.userBookInfo = info;
+        },
+        
+        updateUserBookInfo(updatedAnecdote) {
+            const index = this.userBookInfo.findIndex(ubi => ubi.id === updatedAnecdote.id);
+            
+            if (index !== -1) {
+                // Actualiza el elemento existente
+                this.userBookInfo[index] = { ...this.userBookInfo[index], ...updatedAnecdote };
+            } else {
+                // Agrega un nuevo elemento si no existía
+                this.userBookInfo.push(updatedAnecdote);
+            }
+        },
+        
+        getUserBookInfoStore() {
+            return this.userBookInfo;
+        },
+        
+        getUserBookInfoStoreById(id) {
+            const record = this.userBookInfo.find(ubi => ubi.quote_id === id);
+            return record;
+        },
+        
         getUser() {
           return this.$state.data
         },
@@ -166,7 +192,11 @@ export const useUserStore = defineStore('user', {
         getUserRol() {
           return this.$state.rol
         },
-
+        
+        resetUserBookInfoStore() {
+            this.$state.data = []
+        },
+        
         resetUser() {
           this.$state.data = ''
           this.$state.token = ''
