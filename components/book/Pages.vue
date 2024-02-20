@@ -18,7 +18,7 @@
 		      <input type="file" :id="`imageUpload-${quote.id}`" class="hidden" @change="onFileChange($event, quote.id)" />
 		      <label :for="`imageUpload-${quote.id}`" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
 			      <!-- Muestra la imagen cargada por el usuario o la imagen de la anécdota si existe -->
-			      <img v-if="imageStore.imageSrc[quote.id]" :src="imageStore.imageSrc[quote.id]" class="image-preview" />
+			      <img v-if="imageStore.imageSrc[quote.id]" :src="imageStore.imageSrc[quote.id]" class="image-preview" @error="handleImageError" />
 			      <!-- Muestra el icono de la cámara si no hay imagen seleccionada -->
 			      <img v-else style="width: 35px; height: 35px" src="/book_images/camara.svg">
 			      <label v-if="!imageStore.imageSrc[quote.id]" class="font-blokletters text-paragraph mt-1" style="font-size: 16px">{{quote.message}}</label>
@@ -55,19 +55,19 @@
             <!-- Primer campo de fecha con ícono de corazón -->
             <div class="heart-with-date">
               <Icon name="material-symbols-light:favorite-outline-rounded" class="heart-icon" :style="{width: '35px', height: '35px', color:'#E00DA0'}"/>
-              <input type="text" :id="`date-day-${quote.id}`" class="date-text" maxlength="2" v-model="dates.day"/>
+              <input type="text" :id="`date-day-${quote.id}`" class="date-text" maxlength="2" v-model="dates.day" @input="jumpToNextInput($event, 'date-month-' + quote.id)"/>
             </div>
 
             <!-- Segundo campo de fecha con ícono de corazón -->
             <div class="heart-with-date">
               <Icon name="material-symbols-light:favorite-outline-rounded" class="heart-icon" :style="{width: '35px', height: '35px', color:'#E00DA0'}"/>
-              <input type="text" :id="`date-month-${quote.id}`" class="date-text" maxlength="2" v-model="dates.month"/>
+              <input type="text" :id="`date-month-${quote.id}`" class="date-text" maxlength="2" v-model="dates.month" @input="jumpToNextInput($event, 'date-year-' + quote.id)"/>
             </div>
 
             <!-- Tercer campo de fecha con ícono de corazón -->
             <div class="heart-with-date">
               <Icon name="material-symbols-light:favorite-outline-rounded" class="heart-icon" :style="{width: '35px', height: '35px', color:'#E00DA0'}"/>
-              <input type="text" :id="`date-year-${quote.id}`" class="date-text" maxlength="2" v-model="dates.year"/>
+              <input type="text" :id="`date-year-${quote.id}`" class="date-text" maxlength="2" v-model="dates.year" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)"/>
             </div>
           </div>
 
@@ -188,6 +188,15 @@ const canShares = ref({});
 	}
 }*/
 
+/*const handleImageError = (quoteId) => {
+
+	//en caso de que la imagen no cargue, aqui podriamos variar la url armada, por ejemplo:
+	//imageStore.imageSrc[quoteId] + '=s1000' ya que url_view en db se guarda con '=w1000', variamos entre la w y la s
+
+	//const newImageUrl = imageStore.imageSrc[quoteId] + '=s1000'; // Ejemplo de modificación de URL
+	//imageStore.setImageSrc(quoteId, newImageUrl);
+};*/
+
 const accessChildMethod = () => {
 	if (stPageFlipRef.value) {
 		stPageFlipRef.value.goToIndice(3); // Acceder al método goToPage() del componente hijo
@@ -214,24 +223,24 @@ watch(() => props.quote, (newQuote) => {
 	if (userBookInfo && Array.isArray(userBookInfo)) {
 		const foundAnecdote = userBookInfo.find((anecdote) => anecdote.quote_id === newQuote.id);
 		if (foundAnecdote) {
-			// Establecer los valores de la anécdota encontrada
+			// Establecemos los valores de la anécdota encontrada
 			mood.value = foundAnecdote.mood;
 			anecdoteText.value = foundAnecdote.quote_description;
 			words.value = JSON.parse(foundAnecdote.words || '["", "", "", ""]');
 			const dateParts = (foundAnecdote.date || '').split('-');
 			dates.value = { day: dateParts[2], month: dateParts[1], year: dateParts[0].slice(-2) };
 
-			// Cargar la imagen de la anécdota si existe
+			// Cargamos la imagen de la anécdota si existe
 			if (foundAnecdote.photo && foundAnecdote.photo.url_view) {
 				imageStore.setImageSrc(newQuote.id, foundAnecdote.photo.url_view);
 			} else {
-				// Si no hay foto, asegurarse de que no haya ninguna imagen previa mostrada
+				// Si no hay foto, nos aseguramos de que no haya ninguna imagen previa mostrada
 				imageStore.setImageSrc(newQuote.id, null);
 			}
 		} else {
-			// Resetear los inputs si no se encuentra la anécdota
+			// Reseteamos los inputs si no se encuentra la anécdota
 			resetInputs();
-			// Asegurarse de que no haya ninguna imagen previa mostrada
+			// Nos aseguramos de que no haya ninguna imagen previa mostrada
 			imageStore.setImageSrc(newQuote.id, null);
 		}
 	}
@@ -264,6 +273,18 @@ function onFileChange(event, quoteId) {
 		imageStore.setImageLoaded(quoteId, true);
 	}
 }
+
+const jumpToNextInput = (event, nextInputId) => {
+	const value = event.target.value;
+	const maxLength = event.target.maxLength;
+
+	if (value.length >= maxLength) {
+		const nextInput = document.getElementById(nextInputId);
+		if (nextInput) {
+			nextInput.focus();
+		}
+	}
+};
 
 const isDateComplete = computed(() => {
 	// Asumiendo que quieres una fecha completa con día, mes y año
