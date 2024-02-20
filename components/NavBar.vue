@@ -4,7 +4,7 @@
       <LogoIsoLogo class="w-11" />
     </div>
     <div class="navbar-center">
-      <a href="/dashboard" class="btn btn-ghost normal-case text-xl "><Icon name="tabler:home" :style="{ width: '35px', height: '35px' }" /></a>
+      <a :href="href" class="btn btn-ghost normal-case text-xl "><Icon name="tabler:home" :style="{ width: '35px', height: '35px' }" /></a>
     </div>
     <div class="navbar-end">
       <!-- Socials -->
@@ -35,10 +35,21 @@
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue';
   import { useRouter } from 'vue-router';
 
   const router = useRouter();
   const { $generalStore, $userStore } = useNuxtApp()
+
+  const href = ref('')
+  const rol = $userStore.getUserRol()
+
+  if (rol == 'Admin') {
+	href.value = '/codes'
+  } else {
+	href.value = '/dashboard'
+
+  }
 
   const logout = async () => {
 

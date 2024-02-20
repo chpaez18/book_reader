@@ -64,10 +64,10 @@
 				            <img class="carousel__item" @click="slideTo(index)" :src="item.url_view" style="max-height: 100px; height: 100px; max-width: 100px; width: 100px">
 			            </Slide>
 		            </Carousel>-->
-		            <Carousel :autoplay="2000" :wrap-around="true">
+		            <Carousel :wrap-around="true">
 
 			            <Slide :key="999">
-				            <img class="carousel__item" src="/mockup2.png" style="max-height: 400px; height: 400px; max-width: 400px; width: 400px">
+				            <img class="carousel__item" src="/mockup3.png" style="max-height: 500px; height: 500px; max-width: 500px; width: 500px">
 			            </Slide>
 			            <Slide v-for="(item, index) in userBookPhotos" :key="index">
 
