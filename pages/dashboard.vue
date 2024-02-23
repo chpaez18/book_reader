@@ -110,7 +110,7 @@ function slideTo(val) {
 
   const firstName = user.name.split(' ')[0]
   //const token = $userStore.getUserToken()
-  const image = ref('/mockup2.png');
+  const image = ref('/mockup3.png');
 
 
 
