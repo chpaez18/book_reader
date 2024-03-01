@@ -9,9 +9,16 @@ export class CodeService {
     * */
     async getCodes() {
         
+        const { $userStore } = useNuxtApp()
+        let token = $userStore.getUserToken()
+        
         try {
             
-            let res = await $axios.get('/code/index')
+            let res = await $axios.get('/code/index', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
             return res.data.data
             
         } catch (error) {
@@ -24,9 +31,16 @@ export class CodeService {
     * */
     async generateCode(data) {
         
+        const { $userStore } = useNuxtApp()
+        let token = $userStore.getUserToken()
+        
         try {
             
-            let res = await $axios.post('/code/generate', data);
+            let res = await $axios.post('/code/generate', data, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             return res.data.data;
             
         } catch (error) {
@@ -39,9 +53,16 @@ export class CodeService {
     * */
     async validateCode(code) {
         
+        const { $userStore } = useNuxtApp()
+        let token = $userStore.getUserToken()
+        
         try {
             
-            let res = await $axios.post('/code/validate-code', {code:code});
+            let res = await $axios.post('/code/validate-code', {code:code}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             return res.data.data;
             
         } catch (error) {
@@ -55,9 +76,16 @@ export class CodeService {
     * */
     async changeCodeStatus(email) {
         
+        const { $userStore } = useNuxtApp()
+        let token = $userStore.getUserToken()
+        
         try {
             
-            let res = await $axios.post('/code/change-status', {email:email});
+            let res = await $axios.post('/code/change-status', {email:email}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             return res.data.data;
             
         } catch (error) {
@@ -71,9 +99,16 @@ export class CodeService {
     * */
     async deleteCode(id) {
         
+        const { $userStore } = useNuxtApp()
+        let token = $userStore.getUserToken()
+        
         try {
             
-            let res = await $axios.delete('/code/delete/'+id);
+            let res = await $axios.delete('/code/delete/'+id, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
             return res.data.data;
             
         } catch (error) {

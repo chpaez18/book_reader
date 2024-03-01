@@ -92,7 +92,7 @@
 
 definePageMeta({ middleware: ['auth', 'admin'] })
 
-import { ref } from "vue";
+import { ref, onBeforeMount, onMounted } from "vue";
 import Swal from 'sweetalert2';
 import 'vue-good-table-next/dist/vue-good-table-next.css'
 import { VueGoodTable } from 'vue-good-table-next';
@@ -109,6 +109,7 @@ import { CodeService } from '@/services/codeService';
 	const items = ref([]);
 	const name = ref('');
 	const email = ref('');
+	const errorV = ref(null);
 //--------------------------------------------------------------------------
 
 //Datos de la tabla
@@ -147,12 +148,23 @@ import { CodeService } from '@/services/codeService';
 	},
 ]
 
-	try {
-		items.value = await codeService.getCodes();
-	} catch (error) {
-		console.error("Error al cargar los datos:", error);
-	}
 //--------------------------------------------------------------------------
+
+
+//Inicializamos la pagina
+//--------------------------------------------------------------------------
+	onBeforeMount(async () => {
+		const { data: data, error, pending } = await useAsyncData(
+			'codes',
+			() => codeService.getCodes()
+		);
+
+		items.value = await codeService.getCodes();
+
+	});
+
+//--------------------------------------------------------------------------
+
 
 //Funciones
 //--------------------------------------------------------------------------
