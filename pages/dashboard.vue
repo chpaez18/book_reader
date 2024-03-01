@@ -2,12 +2,7 @@
 
   <NuxtLayout name="dashboard">
 	<section class="flex items-center justify-center">
-		<div v-if="pending" class="spinner-wrapper">
-			<span class="loader"></span>
-			<h4 class="font-dela text-title text-xl">Cargando dashboard...</h4>
-			<br>
-		</div>
-		<div v-else-if="data" class="container mx-auto px-4 py-12 max-w-7xl">
+		<div class="container mx-auto px-4 py-12 max-w-7xl">
 	            <div class="flex flex-col md:flex-row gap-4 items-center">
 			      <!-- Primera columna -->
 			        <div class="card w-96 bg-base-100 h-[619px] bg-gray-100 w-full md:w-1/3 sm:w-1/2 sm:w-full xs:w-full">
@@ -55,12 +50,6 @@
 		            </div>
 	            </div>
 		</div>
-		<div v-else-if="error" class="container mx-auto px-4 py-12 max-w-3xl">
-			<div role="alert" class="alert alert-warning" style="justify-content: left">
-				<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-				<span>Advertencia: Ocurrió un error cargando el dashboard! porfavor, intentalo de nuevo.</span>
-			</div>
-		</div>
 	</section>
   </NuxtLayout>
 
@@ -73,8 +62,6 @@ import {onBeforeMount, ref} from 'vue';
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
 import { UserService } from "~/services/userService";
-import { AuthService } from "@/services/authService";
-import { useAsyncData } from 'nuxt/app'
 
 //Variables reactivas
 //--------------------------------------------------------------------------
@@ -87,27 +74,25 @@ import { useAsyncData } from 'nuxt/app'
 //Services
 //--------------------------------------------------------------------------
 	const userService = new UserService();
-	const authService = new AuthService();
 //--------------------------------------------------------------------------
 
 
 //Hooks
 //--------------------------------------------------------------------------
-	onBeforeMount(async () => {
-		await authService.init();
-	});
+
 //--------------------------------------------------------------------------
 
-//Inicializamos el dashboard
+//Inicializacion del dashboard
 //--------------------------------------------------------------------------
-	const { data: data, error, pending } = await useAsyncData(
-			'userBookInfo',
-			() => userService.getUserBookInfo()
-	);
+	try {
+		const userBookInfo = await userService.getUserBookInfo()
+		userStats.value = userBookInfo.statistics
+		bookData.value = userBookInfo.book_info
+		userBookPhotos.value = userBookInfo.user_book_info.map(info => info.photo).filter(photo => photo != null);
 
-	userStats.value = data.value?.statistics
-	bookData.value = data.value?.book_info
-	userBookPhotos.value = data.value?.user_book_info.map(info => info.photo).filter(photo => photo != null);
+	} catch (error) {
+		console.log(error)
+	}
 //--------------------------------------------------------------------------
 
 </script>

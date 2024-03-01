@@ -13,6 +13,7 @@ import {useAsyncData} from "nuxt/app";
 definePageMeta({ middleware: ['auth', 'buyer'] })
 import { ref } from "vue";
 import { UserService } from "~/services/userService";
+import {BookService} from "~/services/bookService";
 
 //Variables reactivas
 //--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ import { UserService } from "~/services/userService";
 //Services
 //--------------------------------------------------------------------------
 	const userService = new UserService();
+	const bookService = new BookService();
 //--------------------------------------------------------------------------
 
 //Inicializacion del libro
@@ -37,9 +39,12 @@ import { UserService } from "~/services/userService";
 			() => userService.getUserBookInfo()
 	);
 	//const userBookInfo = await userService.getUserBookInfo()
-	$userStore.setUserBookInfo(data.value.user_book_info);
-
-	quotes.value = data.value.quotes;
+	if (data.value != null) {
+		$userStore.setUserBookInfo(data.value.user_book_info);
+		quotes.value = data.value.quotes;
+	} else {
+		quotes.value = await bookService.getQuotes();
+	}
 //--------------------------------------------------------------------------
 
 </script>

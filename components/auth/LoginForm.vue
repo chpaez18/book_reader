@@ -85,14 +85,15 @@ import { useRouter } from 'vue-router';
 			//Informacion del usuario
 			//--------------------------------------------------------------------------
 				$userStore.setUserToken(res.data.access_token);
-				//$userStore.setGoogleToken(response.access_token);
+				const userData = await userService.getUserInfo();
+				$userStore.setUser(userData)
 			//----------------------------------------------------------------------
 
 
 			//Informacion general de la app
 			//--------------------------------------------------------------------------
 				$generalStore.setIsLogged(true);
-				$generalStore.setCodeValidated(res.data.code_validated);
+				$generalStore.setCodeValidated(userData.code_validated);
 				$generalStore.setType('buyer');
 			//----------------------------------------------------------------------
 
