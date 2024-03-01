@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         public: {
-            API_URL: process.env.API_URL,
+            apiBaseUrl: process.env.PUBLIC_API_BASE_URL,
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
         }
     },

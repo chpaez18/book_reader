@@ -7,6 +7,7 @@ import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 onMounted(() => {
-	alert("works!")
+	const router = useRouter();
+	router.push('/auth/login');
 });
 </script>
