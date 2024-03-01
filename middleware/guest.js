@@ -4,8 +4,18 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const router = useRouter();
   const { $generalStore, $userStore } = useNuxtApp()
 
-    const isLoggedIn = $userStore.getUserToken()
+    const isLoggedIn = $generalStore.getIsLogged()
+    const type = $generalStore.getType()
+  
+    //Si el usuario ya inicio sesion, lo redirigimos al dashboard
     if (isLoggedIn) {
-        return navigateTo('/dashboard')
+        if(type === 'admin'){
+          
+            return navigateTo('/codes')
+          
+        } else {
+          
+          return navigateTo('/dashboard')
+        }
     }
 })

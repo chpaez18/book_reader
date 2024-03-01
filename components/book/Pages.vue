@@ -67,23 +67,23 @@
             <!-- Tercer campo de fecha con ícono de corazón -->
             <div class="heart-with-date">
               <Icon name="material-symbols-light:favorite-outline-rounded" class="heart-icon" :style="{width: '35px', height: '35px', color:'#E00DA0'}"/>
-              <input type="text" :id="`date-year-${quote.id}`" class="date-text" maxlength="2" v-model="dates.year" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)"/>
+              <input type="text" :id="`date-year-${quote.id}`" class="date-text" maxlength="2" v-model="dates.year" />
             </div>
           </div>
 
           <div class="mood">
             <label class="font-blokletters primary text-lg" style="color: #6633CC">Mood:</label>
 
-            <input type="radio" :name="`mood-${quote.id}`" value="😀" :id="`happy-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood">
+            <input type="radio" :name="`mood-${quote.id}`" value="😀" :id="`happy-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)">
             <label :for="`happy-${quote.id}`" class="emoji-label">😀</label>
 
-            <input type="radio" :name="`mood-${quote.id}`" value="😕" :id="`sad-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood">
+            <input type="radio" :name="`mood-${quote.id}`" value="😕" :id="`sad-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)">
             <label :for="`sad-${quote.id}`" class="emoji-label">😕</label>
 
-            <input type="radio" :name="`mood-${quote.id}`" value="☹️" :id="`verysad-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood">
+            <input type="radio" :name="`mood-${quote.id}`" value="☹️" :id="`verysad-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)">
             <label :for="`verysad-${quote.id}`" class="emoji-label">☹️</label>
 
-            <input type="radio" :name="`mood-${quote.id}`" value="😍" :id="`love-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood">
+            <input type="radio" :name="`mood-${quote.id}`" value="😍" :id="`love-${quote.id}`" class="emoji-radio" hidden @change="handleEmojiChange" v-model="mood" @input="jumpToNextInput($event, 'textarea-anecdota-' + quote.id)">
             <label :for="`love-${quote.id}`" class="emoji-label">😍</label>
           </div>
 
@@ -125,17 +125,16 @@
     </div>
   </div>
 
-	<div v-if="isSaving" class="modal modal-open">
+  <div v-if="isSaving" class="modal modal-open">
 		<div class="modal-box" style="text-align: -webkit-center">
 			<img src="/image_1.png" style="width: 50%">
 			<h3 class="my-custom-title-class font-blokletters  px-4 text-4xl text-center" style="color: #6633CC">Cargando...</h3>
-			<p class="text-sm text-gray-600 mt-4 leading-relaxed">Subiendo tu anécdota, por favor espera.</p>
+			<p class="text-sm text-gray-600 mt-4 leading-relaxed">Guardando tu anécdota, por favor espera.</p>
 			<div class="modal-action">
-				<!-- Puedes colocar un botón para cerrar el modal si es necesario -->
-				<!-- <button class="btn" @click="isSaving = false">Cerrar</button> -->
 			</div>
 		</div>
 	</div>
+
 </template>
 
 
@@ -143,30 +142,60 @@
 import {ref, computed, watch } from 'vue';
 import Swal from 'sweetalert2';
 import { useImageStore } from '~/stores/imageStore';
-import { useIndexStore } from '~/stores/indexStore';
+import { BookService } from "~/services/bookService";
+import { useIndexUpdater } from '@/composables/useIndexUpdater';
+
+//Props del componente
+//--------------------------------------------------------------------------
+	const props = defineProps({
+		typePage: '',
+		title: '',
+		subTitle: '',
+		pageNumber: '',
+		quote: Object,
+		goToPageFn: Function
+	})
+//--------------------------------------------------------------------------
 
 
-const { $userStore } = useNuxtApp()
-const imageStore = useImageStore();
-const indexStore = useIndexStore();
-
-const userBookInfo = $userStore.getUserBookInfoStore();
-
-
-const isSaving = ref(false);
+//Services
+//--------------------------------------------------------------------------
+	const bookService = new BookService();
+//--------------------------------------------------------------------------
 
 
-const props = defineProps({
-  typePage: '',
-  title: '',
-  subTitle: '',
-  pageNumber: '',
-  quote: Object,
-	goToPageFn: Function
-})
+//Composables
+//--------------------------------------------------------------------------
+	//Este nos ayudara a colocar el efecto rayado en el indice, tan pronto la anecdota se guarde
+	const { updateElement } = useIndexUpdater();
+//--------------------------------------------------------------------------
 
-const stPageFlipRef = ref(null);
-const canShares = ref({});
+//Stores
+//--------------------------------------------------------------------------
+	const { $userStore } = useNuxtApp()
+	const imageStore = useImageStore();
+
+	const userBookInfo = $userStore.getUserBookInfo();
+//--------------------------------------------------------------------------
+
+
+//Variables reactivas
+//--------------------------------------------------------------------------
+	const isSaving = ref(false);
+	//const canShares = ref({});
+
+	const mood = ref('');
+	const anecdoteText = ref('');
+	const words = ref(['', '', '', '']);
+	const dates = ref({
+		day: '',
+		month: '',
+		year: ''
+	});
+	const imageSrc = ref({});
+//--------------------------------------------------------------------------
+
+
 
 /*async function shareViaWebShare(quoteId) {
 	const record = $userStore.getUserBookInfoStoreById(quoteId);
@@ -197,250 +226,186 @@ const canShares = ref({});
 	//imageStore.setImageSrc(quoteId, newImageUrl);
 };*/
 
-const accessChildMethod = () => {
-	if (stPageFlipRef.value) {
-		stPageFlipRef.value.goToIndice(3); // Acceder al método goToPage() del componente hijo
-	}
-};
 
-onMounted(() => {
-	accessChildMethod();
-});
 
-const loadImage = ref('');
-const mood = ref('');
-const anecdoteText = ref('');
-const words = ref(['', '', '', '']);
-const dates = ref({
-  day: '',
-  month: '',
-  year: ''
-});
+//Watchers
+//--------------------------------------------------------------------------
+	//Este watch se encarga de cargar la informacion de la anecdota si existe
+	watch(() => props.quote, (newQuote) => {
+		if (userBookInfo && Array.isArray(userBookInfo)) {
+			const foundAnecdote = userBookInfo.find((anecdote) => anecdote.quote_id === newQuote.id);
+			if (foundAnecdote) {
+				// Establecemos los valores de la anécdota encontrada
+				mood.value = foundAnecdote.mood;
+				anecdoteText.value = foundAnecdote.quote_description;
+				words.value = JSON.parse(foundAnecdote.words || '["", "", "", ""]');
+				const dateParts = (foundAnecdote.date || '').split('-');
+				dates.value = { day: dateParts[2], month: dateParts[1], year: dateParts[0].slice(-2) };
 
-const imageSrc = ref({});
-
-watch(() => props.quote, (newQuote) => {
-	if (userBookInfo && Array.isArray(userBookInfo)) {
-		const foundAnecdote = userBookInfo.find((anecdote) => anecdote.quote_id === newQuote.id);
-		if (foundAnecdote) {
-			// Establecemos los valores de la anécdota encontrada
-			mood.value = foundAnecdote.mood;
-			anecdoteText.value = foundAnecdote.quote_description;
-			words.value = JSON.parse(foundAnecdote.words || '["", "", "", ""]');
-			const dateParts = (foundAnecdote.date || '').split('-');
-			dates.value = { day: dateParts[2], month: dateParts[1], year: dateParts[0].slice(-2) };
-
-			// Cargamos la imagen de la anécdota si existe
-			if (foundAnecdote.photo && foundAnecdote.photo.url_view) {
-				imageStore.setImageSrc(newQuote.id, foundAnecdote.photo.url_view);
+				// Cargamos la imagen de la anécdota si existe
+				if (foundAnecdote.photo && foundAnecdote.photo.url_view) {
+					imageStore.setImageSrc(newQuote.id, foundAnecdote.photo.url_view);
+				} else {
+					// Si no hay foto, nos aseguramos de que no haya ninguna imagen previa mostrada
+					imageStore.setImageSrc(newQuote.id, null);
+				}
 			} else {
-				// Si no hay foto, nos aseguramos de que no haya ninguna imagen previa mostrada
+				// Reseteamos los inputs si no se encuentra la anécdota
+				resetInputs();
+				// Nos aseguramos de que no haya ninguna imagen previa mostrada
 				imageStore.setImageSrc(newQuote.id, null);
 			}
-		} else {
-			// Reseteamos los inputs si no se encuentra la anécdota
-			resetInputs();
-			// Nos aseguramos de que no haya ninguna imagen previa mostrada
-			imageStore.setImageSrc(newQuote.id, null);
 		}
-	}
-}, { immediate: true });
+	}, { immediate: true });
 
-//Este watch se encarga de evaluar y mostrar los iconos de compartir en redes sociales, descomentar si en algun futuro se cambia la forma de almacenar las imagenes a un servicio externo
-/*watch(() => $userStore.getUserBookInfoStore(), (userBookInfo) => {
-	userBookInfo.forEach(anecdote => {
-		canShares.value[anecdote.quote_id] = !!anecdote && anecdote.is_completed;
-	});
-}, { deep: true, immediate: true });*/
-
-function resetInputs() {
-	mood.value = '';
-	anecdoteText.value = '';
-	words.value = ['', '', '', ''];
-	dates.value.day = '';
-	dates.value.month = '';
-	dates.value.year = '';
-}
-
-function onFileChange(event, quoteId) {
-	const file = event.target.files[0];
-	if (file) {
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			imageStore.setImageSrc(quoteId, e.target.result);
-		};
-		reader.readAsDataURL(file);
-		imageStore.setImageLoaded(quoteId, true);
-	}
-}
-
-const jumpToNextInput = (event, nextInputId) => {
-	const value = event.target.value;
-	const maxLength = event.target.maxLength;
-
-	if (value.length >= maxLength) {
-		const nextInput = document.getElementById(nextInputId);
-		if (nextInput) {
-			nextInput.focus();
-		}
-	}
-};
-
-const isDateComplete = computed(() => {
-	// Asumiendo que quieres una fecha completa con día, mes y año
-	return dates.value.day.length === 2 && dates.value.month.length === 2 && dates.value.year.length === 2;
-});
-
-const isDateValid = computed(() => {
-	// Aquí puedes agregar validaciones adicionales para asegurarte de que la fecha sea válida
-	// Por ejemplo, que el día sea entre 1 y 31 y el mes entre 1 y 12
-	const day = parseInt(dates.value.day);
-	const month = parseInt(dates.value.month);
-	const year = parseInt(dates.value.year);
-	return day > 0 && day < 32 && month > 0 && month < 13 && year >= 0;
-});
-
-
-
-/*const handleSaveAnecdote = async () => {
-
-	isSaving.value = true;
-
-	const formData = new FormData();
-	formData.append('quote_id', props.quote.id);
-	formData.append('mood', mood.value);
-	formData.append('quote_description', anecdoteText.value);
-	formData.append('words', JSON.stringify(words.value));
-	formData.append('dates', JSON.stringify(dates.value));
-	formData.append('is_completed', 1);
-
-	if (imageStore.imageSrc[props.quote.id] && imageStore.imageLoaded[props.quote.id]) {
-		formData.append('image', imageStore.imageSrc[props.quote.id]);
-	}
-
-
-	try {
-		const res = await $userStore.saveAnecdote(formData);
-		// Verifica si la respuesta es exitosa
-		if (res) {
-
-			Swal.fire({
-				title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Genial!</span>',
-				html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Tu Anécdota ha sido guardada correctamente.</div>',
-				icon: 'success',
-				confirmButtonText: '¡Continuemos!',
-				didOpen: () => {
-					const confirmButton = document.querySelector('.swal2-confirm');
-					confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
-					confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
-					confirmButton.removeAttribute('style');
-
-					const customTitle = document.querySelector('.my-custom-title-class');
-					const customText = document.querySelector('.my-custom-text-class');
-
-					if (customTitle) customTitle.style.color = '#6633CC';
-
-				}
-			})
-		}
-	} catch (error) {
-		console.error('Error al guardar la anécdota:', error);
-		Swal.fire({
-			title: 'Error',
-			text: 'Ocurrió un error al guardar la anécdota.',
-			icon: 'error',
-			confirmButtonText: 'Entendido'
+	//Este watch se encarga de evaluar y mostrar los iconos de compartir en redes sociales, descomentar si en algun futuro se cambia la forma de almacenar las imagenes a un servicio externo
+	/*watch(() => $userStore.getUserBookInfoStore(), (userBookInfo) => {
+		userBookInfo.forEach(anecdote => {
+			canShares.value[anecdote.quote_id] = !!anecdote && anecdote.is_completed;
 		});
-	} finally {
-		// Reactiva el botón de guardar independientemente del resultado de la solicitud
-		isSaving.value = false;
-	}
-};*/
+	}, { deep: true, immediate: true });*/
+
+//--------------------------------------------------------------------------
 
 
-
-const handleSaveAnecdote = () => {
-
-	if (!isDateComplete.value && !isDateValid.value) {
-		alert('Debes indicar un fecha');
-		return;
-	}
-
-	if (mood.value === '') {
-		alert('Debes seleccionar un mood')
-		return;
-	}
-
-	isSaving.value = true;
-
-	const formData = new FormData();
-	formData.append('quote_id', props.quote.id);
-	formData.append('mood', mood.value);
-	formData.append('quote_description', anecdoteText.value);
-	formData.append('words', JSON.stringify(words.value));
-	formData.append('dates', JSON.stringify(dates.value));
-	formData.append('is_completed', 1);
-
-	if (imageStore.imageSrc[props.quote.id] && imageStore.imageLoaded[props.quote.id]) {
-		formData.append('image', imageStore.imageSrc[props.quote.id]);
-	}
-
-	// Llama a la función de guardado en segundo plano sin esperar a que termine
-	$userStore.saveAnecdote(formData).then(res => {
-		// Manejo de la respuesta exitosa
-		if (res) {
-			Swal.fire({
-				title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Genial!</span>',
-				html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Tu Anécdota ha sido guardada correctamente.</div>',
-				icon: 'success',
-				confirmButtonText: '¡Continuemos!',
-				didOpen: () => {
-					const confirmButton = document.querySelector('.swal2-confirm');
-					confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
-					confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
-					confirmButton.removeAttribute('style');
-
-					const customTitle = document.querySelector('.my-custom-title-class');
-					const customText = document.querySelector('.my-custom-text-class');
-
-					if (customTitle) customTitle.style.color = '#6633CC';
-
-				}
-			})
-
-			//actualizamos el store con la nueva anecdota
-			$userStore.updateUserBookInfo(res)
-			indexStore.refreshIndex(props.quote.id);
-		}
-	}).catch(error => {
-		console.log(error)
-		// Manejo de errores
-		Swal.fire({
-			title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Ops!</span>',
-			html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Ocurrio un error guardando tu anecdota, intentalo de nuevo.</div>',
-			icon: 'warning',
-			confirmButtonText: '¡Continuemos!',
-			didOpen: () => {
-				const confirmButton = document.querySelector('.swal2-confirm');
-				confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
-				confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
-				confirmButton.removeAttribute('style');
-
-				const customTitle = document.querySelector('.my-custom-title-class');
-				const customText = document.querySelector('.my-custom-text-class');
-
-				if (customTitle) customTitle.style.color = '#6633CC';
-
-			}
-		})
-	}).finally(() => {
-		// Si necesitas realizar alguna acción después de enviar los datos (como reiniciar estados), hazlo aquí
-		isSaving.value = false;
+//Funciones
+//--------------------------------------------------------------------------
+	const isDateComplete = computed(() => {
+		return dates.value.day.length === 2 && dates.value.month.length === 2 && dates.value.year.length === 2;
 	});
 
-};
+	const isDateValid = computed(() => {
+		// Aquí puedes agregar validaciones adicionales para asegurarte de que la fecha sea válida
+		// Por ejemplo, que el día sea entre 1 y 31 y el mes entre 1 y 12
+		const day = parseInt(dates.value.day);
+		const month = parseInt(dates.value.month);
+		const year = parseInt(dates.value.year);
+		return day > 0 && day < 32 && month > 0 && month < 13 && year >= 0;
+	});
+
+	function resetInputs() {
+		mood.value = '';
+		anecdoteText.value = '';
+		words.value = ['', '', '', ''];
+		dates.value.day = '';
+		dates.value.month = '';
+		dates.value.year = '';
+	}
+
+	function onFileChange(event, quoteId) {
+		const file = event.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				imageStore.setImageSrc(quoteId, e.target.result);
+			};
+			reader.readAsDataURL(file);
+			imageStore.setImageLoaded(quoteId, true);
+		}
+	}
+
+	const jumpToNextInput = (event, nextInputId) => {
+		const value = event.target.value;
+		const maxLength = event.target.maxLength;
+
+		if (value.length >= maxLength) {
+			const nextInput = document.getElementById(nextInputId);
+			if (nextInput) {
+				nextInput.focus();
+			}
+		}
+	};
+
+	const handleSaveAnecdote = () => {
+
+		// Validamos la fecha y el mood
+		//--------------------------------------------------------------------------
+			if (!isDateComplete.value && !isDateValid.value) {
+				alert('Debes indicar un fecha');
+				return;
+			}
+
+			if (mood.value === '') {
+				alert('Debes seleccionar un mood')
+				return;
+			}
+		//--------------------------------------------------------------------------
 
 
+		//Iniciamos un nuevo form data para enviar la informacion de la anecdota
+		//--------------------------------------------------------------------------
+			isSaving.value = true;
+			const formData = new FormData();
+			formData.append('quote_id', props.quote.id);
+			formData.append('mood', mood.value);
+			formData.append('quote_description', anecdoteText.value);
+			formData.append('words', JSON.stringify(words.value));
+			formData.append('dates', JSON.stringify(dates.value));
+			formData.append('is_completed', 1);
+
+			//si la imagen cambio, la agregamos al form data, de lo contrario no
+			if (imageStore.imageSrc[props.quote.id] && imageStore.imageLoaded[props.quote.id]) {
+				formData.append('image', imageStore.imageSrc[props.quote.id]);
+			}
+		//--------------------------------------------------------------------------
+
+		//Llamamos a la función de guardado en segundo plano sin esperar a que termine
+		//--------------------------------------------------------------------------
+			bookService.saveAnecdote(formData).then(res => {
+				// Manejo de la respuesta exitosa
+				if (res) {
+					Swal.fire({
+						title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Genial!</span>',
+						html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Tu Anécdota ha sido guardada correctamente.</div>',
+						icon: 'success',
+						confirmButtonText: '¡Continuemos!',
+						didOpen: () => {
+							const confirmButton = document.querySelector('.swal2-confirm');
+							confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
+							confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
+							confirmButton.removeAttribute('style');
+
+							const customTitle = document.querySelector('.my-custom-title-class');
+							const customText = document.querySelector('.my-custom-text-class');
+
+							if (customTitle) customTitle.style.color = '#6633CC';
+
+						}
+					})
+
+					//actualizamos el store con la nueva anecdota
+					$userStore.updateUserBookInfo(res)
+
+					//actualizamos el indice principal para colocar el efecto rayado sobre el corazon de inmediato
+					updateElement(props.quote.id)
+				}
+			}).catch(error => {
+				console.log(error)
+				// Manejo de errores
+				Swal.fire({
+					title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Ops!</span>',
+					html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Ocurrio un error guardando tu anecdota, intentalo de nuevo.</div>',
+					icon: 'warning',
+					confirmButtonText: '¡Continuemos!',
+					didOpen: () => {
+						const confirmButton = document.querySelector('.swal2-confirm');
+						confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
+						confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
+						confirmButton.removeAttribute('style');
+
+						const customTitle = document.querySelector('.my-custom-title-class');
+						const customText = document.querySelector('.my-custom-text-class');
+
+						if (customTitle) customTitle.style.color = '#6633CC';
+
+					}
+				})
+			}).finally(() => {
+				isSaving.value = false;
+			});
+		//--------------------------------------------------------------------------
+	};
+//--------------------------------------------------------------------------
 
 </script>
 

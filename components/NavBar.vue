@@ -14,7 +14,7 @@
         <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-tiktok" :style="{ width: '35px', height: '46px' }" /></a>
         <a class="btn btn-ghost normal-case 3xs:hidden 1xs:hidden xs:hidden sm:hidden md:inline mt-2"><Icon name="tabler:brand-behance" :style="{ width: '35px', height: '46px' }" /></a>
       <!-- Socials -->
-      &nbsp;
+
       <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full mt-1">
@@ -35,38 +35,50 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { UserService } from "@/services/userService";
+import { GoogleAuthService } from "@/services/googleAuthService";
 
-  const router = useRouter();
-  const { $generalStore, $userStore } = useNuxtApp()
+const router = useRouter();
+const { $generalStore, $userStore, $bookStore } = useNuxtApp()
+const href = ref('')
+const type = $generalStore.getType()
 
-  const href = ref('')
-  const rol = $userStore.getUserRol()
+const userService = new UserService();
+const googleService = new GoogleAuthService();
 
-  if (rol == 'Admin') {
-	href.value = '/codes'
-  } else {
-	href.value = '/dashboard'
+  //Verificamos el tipo de usuario
+  //-----------------------------------------------------------
+		if (type == 'admin') {
+			href.value = '/codes'
+		} else {
+			href.value = '/dashboard'
 
-  }
+		}
+  //-----------------------------------------------------------
 
-  const logout = async () => {
 
-    const token = $userStore.getUserToken()
+//FUNCIONES
+//-----------------------------------------------------------
+	  const logout = async () => {
 
-    $generalStore.setIsLogged(false)
-    $generalStore.setType('')
-    $generalStore.setCodeValidated(0)
+		try {
+			await userService.logout()
+			//googleService.logout($userStore.getGoogleToken())
 
-	localStorage.removeItem("lastPage");
+			$userStore.resetUser()
+			$bookStore.resetBook()
+			$generalStore.resetGeneral()
+			localStorage.removeItem("lastPage");
 
-	$userStore.resetUser()
-	$userStore.resetUserBookInfoStore()
+			router.push('/auth/login');
 
-	await $userStore.logout(token)
-	  router.push('/auth/login');
+		} catch (error) {
+			console.error('Error al cerrar sesion: ', error);
+		}
 
-  }
+	  }
+//-----------------------------------------------------------
 </script>
 

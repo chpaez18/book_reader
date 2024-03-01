@@ -2,16 +2,45 @@
   <NuxtLayout name="dashboard">
     <div class="dark-overlay"></div> <!-- Superposición oscura -->
     <section class="flex items-center justify-center">
-      <StPageFlip :quotes="userBookInfo.quotes" />
+      <StPageFlip :quotes="quotes" />
     </section>
   </NuxtLayout>
 </template>
 
 <script setup>
-  definePageMeta({ middleware: ['auth', 'buyer'] })
-  const { $userStore } = useNuxtApp()
-  const userBookInfo = await $userStore.getUserBookInfo()
-  $userStore.setUserBookInfo(userBookInfo.user_book_info);
+import {useAsyncData} from "nuxt/app";
+
+definePageMeta({ middleware: ['auth', 'buyer'] })
+import { ref } from "vue";
+import { UserService } from "~/services/userService";
+
+//Variables reactivas
+//--------------------------------------------------------------------------
+	const quotes = ref([]);
+//--------------------------------------------------------------------------
+
+
+//Stores
+//--------------------------------------------------------------------------
+	const { $userStore } = useNuxtApp()
+//--------------------------------------------------------------------------
+
+//Services
+//--------------------------------------------------------------------------
+	const userService = new UserService();
+//--------------------------------------------------------------------------
+
+//Inicializacion del libro
+//--------------------------------------------------------------------------
+	const { data: data, error } = await useAsyncData(
+			'userBookInfo',
+			() => userService.getUserBookInfo()
+	);
+	//const userBookInfo = await userService.getUserBookInfo()
+	$userStore.setUserBookInfo(data.value.user_book_info);
+
+	quotes.value = data.value.quotes;
+//--------------------------------------------------------------------------
 
 </script>
 

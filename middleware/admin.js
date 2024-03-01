@@ -1,18 +1,9 @@
-
-export default defineNuxtRouteMiddleware(async (to, from) => {
-    const { $generalStore, $userStore } = useNuxtApp()
+export default defineNuxtRouteMiddleware((to, from) => {
+    const { $userStore, $generalStore } = useNuxtApp()
     
-    const rol = $userStore.getUserRol()
-    var  isLogged = $generalStore.isLogged
-    
-    if (isLogged) {
-        if (rol == 'Admin') {
-            return true
-        } else {
-            return navigateTo('/error/accion-no-autorizada')
-        }
-    } else {
-        return navigateTo('/auth/login')
+    if ($generalStore.getType() !== 'admin') {
+        // Si el usuario no es un admin, redirigimos a la página de acción no autorizada
+        return navigateTo('/error/accion-no-autorizada');
     }
-
-})
+    
+});

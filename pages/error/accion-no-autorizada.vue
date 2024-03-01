@@ -16,17 +16,25 @@
 	</NuxtLayout>
 </template>
 <script setup>
-	import { ref } from 'vue';
-	const { $generalStore, $userStore } = useNuxtApp()
+import { ref } from 'vue';
 
-	const rol = $userStore.getUserRol()
-	const isLogged = $generalStore.getIsLogged()
+//Stores
+//--------------------------------------------------------------------------
+	const { $generalStore, $userStore } = useNuxtApp()
+//--------------------------------------------------------------------------
+
+//Variables Reactivas
+//--------------------------------------------------------------------------
 	const href = ref('')
-	if (rol == "Admin") {
+//--------------------------------------------------------------------------
+
+
+const type = $generalStore.getType()
+if (type == "admin") {
 
 		href.value = '/codes'
 
-	} else if (rol == "Buyer") {
+	} else if (type == "buyer") {
 
 		href.value = '/dashboard'
 	}

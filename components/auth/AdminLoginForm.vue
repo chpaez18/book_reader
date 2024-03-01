@@ -43,14 +43,7 @@
 
 	            <br>
 	            <br>
-	            <a href="/auth/login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="vaadin:arrow-backward" class="mr-2 mb-1 w-5 h-5" /> Regresar</button></a>
-<!--                <div class="block sm:flex justify-between items-center">
-                    <div class="flex items-center w-full sm:w-auto mb-4 sm:mb-0">
-                        <input type="checkbox" id="remember" name="remember" class="checkbox checkbox-primary" />
-                        <label for="remember" class="ml-2 text-gray-700 font-blokletters text-sm">Recuérdame</label>
-                    </div>
-                    <nuxt-link to="/auth/forgot-password" class="text-primary font-blokletters text-sm font-semibold w-full sm:w-auto text-center sm:text-right">¿Olvidaste tu contraseña?</nuxt-link>
-                </div>-->
+	              <NuxtLink to="/auth/login"><button class="w-full btn btn-primary text-white rounded-lg font-blokletters"><Icon name="vaadin:arrow-backward" class="mr-2 mb-1 w-5 h-5" /> Regresar</button></NuxtLink>
               </div>
             </div>
           </div>
@@ -67,36 +60,80 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
-  const router = useRouter();
-  const { $generalStore, $userStore, $axios } = useNuxtApp()
+//Stores
+//--------------------------------------------------------------------------
+    const { $generalStore, $userStore, $axios } = useNuxtApp()
+	const router = useRouter();
+//--------------------------------------------------------------------------
 
-  const email = ref('');
-  const password = ref('');
+//Variables Reactivas
+//--------------------------------------------------------------------------
+	const email = ref('');
+	const password = ref('');
+//--------------------------------------------------------------------------
 
-  async function login() {
+//Funciones
+//--------------------------------------------------------------------------
+    async function login() {
+
+	    if (email.value === '') {
+		    alert('Debes indicar un correo electronico')
+		    return;
+	    }
+		if (password.value === '') {
+		    alert('Debes indicar una contraseña')
+		    return;
+	    }
+
 	  try {
 		  const response = await $axios.post('/login', {
 			  email: email.value,
 			  password: password.value,
 		  });
 
-		  // Aquí manejas la respuesta. Por ejemplo, guardar el token y redirigir.
-		  // Suponiendo que tu API responde con un token en caso de éxito
 		  if (response && response.data.data.token) {
+
 			  $userStore.setUserToken(response.data.data.token);
-			  $generalStore.setType('admin');
-			  router.push('/codes');
+
+			  //Informacion general de la app
+			  //----------------------------------------------------------------------
+				  $generalStore.setIsLogged(true);
+				  $generalStore.setType('admin');
+			  //----------------------------------------------------------------------
+
+			  //Redireccionamos a la pantalla principal
+			  //----------------------------------------------------------------------
+			      router.push('/codes');
+			  //----------------------------------------------------------------------
 		  }
 	  } catch (error) {
-		  // Manejar errores, por ejemplo mostrar un mensaje de error
-		  console.error('Error en inicio de sesión', error);
-		  alert('Credenciales inválidas. Por favor, intenta de nuevo.');
+
+		  Swal.fire({
+			  title: '<span class="my-custom-title-class font-blokletters  px-4 text-4xl text-center">¡Oops!</span>',
+			  html: '<div class="my-custom-text-class font-vibur primary text-1xl uppercase">Credenciales inválidas. Por favor, intentalo de nuevo.</div>',
+			  icon: 'warning',
+			  confirmButtonText: '¡Vale!',
+			  didOpen: () => {
+				  const confirmButton = document.querySelector('.swal2-confirm');
+				  confirmButton.classList.remove('swal2-confirm', 'swal2-styled');
+				  confirmButton.classList.add('w-full', 'btn', 'btn-primary', 'text-white', 'rounded-lg', 'font-blokletters');
+				  confirmButton.removeAttribute('style');
+
+				  const customTitle = document.querySelector('.my-custom-title-class');
+				  const customText = document.querySelector('.my-custom-text-class');
+
+				  if (customTitle) customTitle.style.color = '#6633CC';
+
+			  }
+		  })
 	  }
   }
 
+//--------------------------------------------------------------------------
 
 </script>
 

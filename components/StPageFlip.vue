@@ -93,7 +93,6 @@
 
             <!-- El número de página es (index * 2) + 2 -->
             <BookPages typePage="Anecdota" :pageNumber="(index * 2) + 2" :quote="quote" :goToPageFn="goToIndice"/>
-
           </div>
         <!-- FIN CITAS  -->
 
@@ -147,142 +146,143 @@
           </div>
         <!-- FIN CONTRAPORTADA  -->
     </div>
-
-<!--	  <div v-if="isLoading" class="modal modal-open">
-		  <div class="modal-box" style="text-align: -webkit-center">
-			  <img src="/image_1.png" style="width: 50%">
-			  <h3 class="my-custom-title-class font-blokletters  px-4 text-4xl text-center" style="color: #6633CC">Cargando...</h3>
-			  <p class="text-sm text-gray-600 mt-4 leading-relaxed">Porfavor, espera mientras cargamos el libro.</p>
-		  </div>
-	  </div>-->
-	  <div v-if="isLoading" class="progress-bar-container">
-		  <div class="progress-bar" style="width: 0%;"></div>
-	  </div>
-
+	<div v-if="isLoading" class="progress-bar-container">
+		<div class="progress-bar" style="width: 0%;"></div>
+	</div>
   </div>
 </template>
 
 <script setup>
-  import { PageFlip } from 'page-flip';
-  import { ref, onMounted } from 'vue';
-  const { $userStore } = useNuxtApp()
+import { PageFlip } from 'page-flip';
+import { ref, onMounted } from 'vue';
 
-  const props = defineProps({
-    quotes: Array,
-  })
+//Props del componente
+//--------------------------------------------------------------------------
+	const props = defineProps({
+		quotes: Array,
+	})
+//--------------------------------------------------------------------------
 
 
+//Stores
+//--------------------------------------------------------------------------
+	const { $userStore, $bookStore } = useNuxtApp()
+//--------------------------------------------------------------------------
 
+
+//Variables reactivas
+//--------------------------------------------------------------------------
+	var flipController = ref(null);
+	const isLoading = ref(true);
+	const userBookInfo = ref([]);
+//--------------------------------------------------------------------------
+
+
+//Inicializacion del libro
+//--------------------------------------------------------------------------
   const user = $userStore.getUser()
-
-
-  var flipController = ref(null);
-  const isLoading = ref(true);
-
-  const userBookInfo = $userStore.getUserBookInfoStore();
-
+  userBookInfo.value = Array.from($userStore.getUserBookInfo());
 
   onMounted(() => {
 
-	  // Establecemos una barra de progreso mientras el libro se termina de cargar por completo
-	  //--------------------------------------------------------------------------------
-		  let progress = 0;
-		  const interval = setInterval(() => {
-			  if (progress < 100) {
-				  progress += 5; // Incrementa el progreso en 5%
-				  document.querySelector('.progress-bar').style.width = `${progress}%`;
-			  } else {
-				  clearInterval(interval);
-				  isLoading.value = false;
-				  document.querySelector('#book').style.visibility = 'visible';
-			  }
-		  }, 95); // Actualiza el progreso cada 100ms
-	  //--------------------------------------------------------------------------------
+		  // Establecemos una barra de progreso mientras el libro se termina de cargar por completo
+		  //--------------------------------------------------------------------------------
+			  let progress = 0;
+			  const interval = setInterval(() => {
+				  if (progress < 100) {
+					  progress += 5; // Incrementa el progreso en 5%
+					  document.querySelector('.progress-bar').style.width = `${progress}%`;
+				  } else {
+					  clearInterval(interval);
+					  isLoading.value = false;
+					  document.querySelector('#book').style.visibility = 'visible';
+				  }
+			  }, 95); // Actualiza el progreso cada 100ms
+		  //--------------------------------------------------------------------------------
 
 
 
-    // Inicializamos el libro
-    //--------------------------------------------------------------------------------
-        const pageFlip = new PageFlip(document.getElementById('book'), {
-            showCover: true,
-            width: 400, // required parameter - base page width
-            height: 700, // required parameter - base page height
-            useMouseEvents: true
-        });
-        pageFlip.loadFromHTML(document.querySelectorAll('.my-page'));
-    //--------------------------------------------------------------------------------
+	    // Inicializamos el libro
+	    //--------------------------------------------------------------------------------
+	        const pageFlip = new PageFlip(document.getElementById('book'), {
+	            showCover: true,
+	            width: 400, // required parameter - base page width
+	            height: 700, // required parameter - base page height
+	            useMouseEvents: true
+	        });
+	        pageFlip.loadFromHTML(document.querySelectorAll('.my-page'));
+	    //--------------------------------------------------------------------------------
 
 
-    // Evitamos la animacion de volteo de página en las esquinas superiores
-    //--------------------------------------------------------------------------------
-        flipController = pageFlip.getFlipController();
-        // Guarda el método original
-        const originalShowCorner = flipController.showCorner;
+	    // Evitamos la animacion de volteo de página en las esquinas superiores
+	    //--------------------------------------------------------------------------------
+	        flipController = pageFlip.getFlipController();
+	        // Guarda el método original
+	        const originalShowCorner = flipController.showCorner;
 
-        // Sobrescribe el método showCorner
-        flipController.showCorner = function(globalPos) {
-          // Obtén las dimensiones y la posición del libro
-          const bookRect = document.getElementById('book').getBoundingClientRect();
+	        // Sobrescribe el método showCorner
+	        flipController.showCorner = function(globalPos) {
+	          // Obtén las dimensiones y la posición del libro
+	          const bookRect = document.getElementById('book').getBoundingClientRect();
 
-          // Establece un margen para definir qué se considera "cerca de la esquina"
-          const cornerMargin = 560;
+	          // Establece un margen para definir qué se considera "cerca de la esquina"
+	          const cornerMargin = 560;
 
-          // Verifica si la posición está cerca de la esquina superior izquierda
-          const isNearTopLeftCorner = globalPos.x - bookRect.left <= cornerMargin && globalPos.y - bookRect.top <= cornerMargin;
+	          // Verifica si la posición está cerca de la esquina superior izquierda
+	          const isNearTopLeftCorner = globalPos.x - bookRect.left <= cornerMargin && globalPos.y - bookRect.top <= cornerMargin;
 
-          // Verifica si la posición está cerca de la esquina superior derecha
-          // Asume que el ancho del libro en la página es conocido (bookRect.width) o calcula dinámicamente si es necesario
-          const isNearTopRightCorner = bookRect.right - globalPos.x <= cornerMargin && globalPos.y - bookRect.top <= cornerMargin;
+	          // Verifica si la posición está cerca de la esquina superior derecha
+	          // Asume que el ancho del libro en la página es conocido (bookRect.width) o calcula dinámicamente si es necesario
+	          const isNearTopRightCorner = bookRect.right - globalPos.x <= cornerMargin && globalPos.y - bookRect.top <= cornerMargin;
 
-          // Si NO estamos cerca de las esquinas superiores, ejecuta el comportamiento predeterminado
-          if (!isNearTopLeftCorner && !isNearTopRightCorner) {
-            originalShowCorner.call(flipController, globalPos);
-          }
-          // Si estamos cerca de alguna de las esquinas superiores, no hacemos nada para evitar la animación
-        };
-    //--------------------------------------------------------------------------------
-
-
-    //evitamos que la pagina haga flip al hacer click
-    //--------------------------------------------------------------------------------
-        function stopPropagation(event) {
-          event.stopPropagation();
-        }
-
-        const inputsAndTextareas = document.querySelectorAll('.textarea-anecdota, input[type="text"].palabra, label, span, input[type="text"].date-text');
-        inputsAndTextareas.forEach(element => {
-          element.addEventListener('mouseenter', stopPropagation, true);
-          element.addEventListener('mousedown', stopPropagation, true);
-          element.addEventListener('mouseup', stopPropagation, true);
-          element.addEventListener('click', stopPropagation, true);
-        });
-    //--------------------------------------------------------------------------------
-
-	// Verificamos la ultima pagina que visito el usuario
-	//--------------------------------------------------------------------------------
-		const lastPage = localStorage.getItem('lastPage');
-		if (lastPage) {
-			flipController.flipToPage(parseInt(lastPage) - 2); // Ajusta según cómo manejes la numeración de páginas
-		}
-	//--------------------------------------------------------------------------------
-
-	// Guardamos la ultima pagina que visito el usuario
-	//--------------------------------------------------------------------------------
-		  pageFlip.on('flip', (e) => {
-			  const currentPage = e.data; // Obtiene la página actual
-			  localStorage.setItem('lastPage', currentPage + 2);
-		  });
-	//--------------------------------------------------------------------------------
+	          // Si NO estamos cerca de las esquinas superiores, ejecuta el comportamiento predeterminado
+	          if (!isNearTopLeftCorner && !isNearTopRightCorner) {
+	            originalShowCorner.call(flipController, globalPos);
+	          }
+	          // Si estamos cerca de alguna de las esquinas superiores, no hacemos nada para evitar la animación
+	        };
+	    //--------------------------------------------------------------------------------
 
 
-});
+	    //evitamos que la pagina haga flip al hacer click
+	    //--------------------------------------------------------------------------------
+	        function stopPropagation(event) {
+	          event.stopPropagation();
+	        }
 
-  function generateAndStoreIndice() {
-	  const indiceContainer = document.querySelector('.indice'); // Asegúrate de que este selector apunte al contenedor correcto de tu índice
-	  const indexHTML = indiceContainer.innerHTML;
-	  localStorage.setItem('pageIndexHTML', indexHTML);
-  }
+	        const inputsAndTextareas = document.querySelectorAll('.textarea-anecdota, input[type="text"].palabra, label, span, input[type="text"].date-text');
+	        inputsAndTextareas.forEach(element => {
+	          element.addEventListener('mouseenter', stopPropagation, true);
+	          element.addEventListener('mousedown', stopPropagation, true);
+	          element.addEventListener('mouseup', stopPropagation, true);
+	          element.addEventListener('click', stopPropagation, true);
+	        });
+	    //--------------------------------------------------------------------------------
 
+		// Verificamos la ultima pagina que visito el usuario
+		//--------------------------------------------------------------------------------
+			const lastPage = localStorage.getItem('lastPage');
+			if (lastPage) {
+				flipController.flipToPage(parseInt(lastPage) - 2); // Ajusta según cómo manejes la numeración de páginas
+			}
+		//--------------------------------------------------------------------------------
+
+		// Guardamos la ultima pagina que visito el usuario
+		//--------------------------------------------------------------------------------
+			  pageFlip.on('flip', (e) => {
+				  const currentPage = e.data; // Obtiene la página actual
+				  localStorage.setItem('lastPage', currentPage + 2);
+			  });
+		//--------------------------------------------------------------------------------
+
+
+  });
+
+//--------------------------------------------------------------------------
+
+
+//Funciones
+//--------------------------------------------------------------------------
   const goToPage = (quoteNumber) => {
     // Calcula el número de página para la cita principal
     const pageNumber = 5 + (quoteNumber - 1) * 2;
@@ -294,7 +294,7 @@
 	  localStorage.setItem('lastPage', 6); // Almacena el número de la última página
 	  flipController.flipToPage(3); // -1 porque las páginas suelen empezar en 0
   };
-
+//--------------------------------------------------------------------------
 </script>
 
 <style src="assets/css/book.css"></style>
