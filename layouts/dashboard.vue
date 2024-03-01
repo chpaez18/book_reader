@@ -3,6 +3,7 @@
         <NavBar />
         <slot />
     </div>
+
 </template>
 
 <script>

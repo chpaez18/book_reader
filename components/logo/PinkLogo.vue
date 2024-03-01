@@ -1,16 +1,8 @@
 <template>
-  <img :style="props.style" :class="props.class" :src="pinkLogo" />
+  <img style='width: 60%' class="mb-4 place-self-center" />
 </template>
 
 <script setup lang="ts">
   const pinkLogo = ref('/logo_1.svg');
-  const props = defineProps({
-    style : {
-        type: String
-    },
-    class : {
-        type: String
-    }
-  })
 </script>
 
