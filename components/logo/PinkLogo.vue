@@ -1,5 +1,5 @@
 <template>
-  <img style='width: 60%' class="mb-4 place-self-center" />
+  <img :src="pinkLogo" style='width: 60%' class="mb-4 place-self-center" />
 </template>
 
 <script setup lang="ts">
