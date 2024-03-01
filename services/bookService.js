@@ -15,13 +15,16 @@ export class BookService {
         const { $userStore } = useNuxtApp()
         let token = $userStore.getUserToken()
         
-        
-        let res = await $axios.get('/book/info', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        return res.data.data
+        try {
+            let res = await $axios.get('/book/info', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            return res.data.data
+        } catch (error) {
+            throw error;
+        }
     }
     
     async getQuotes() {
@@ -29,12 +32,16 @@ export class BookService {
         const { $userStore } = useNuxtApp()
         let token = $userStore.getUserToken()
         
-        let res = await $axios.get('/book/quotes', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        return res.data.data
+        try {
+            let res = await $axios.get('/book/quotes', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            return res.data.data
+        } catch (error) {
+            throw error;
+        }
         
     }
     
