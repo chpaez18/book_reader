@@ -40,5 +40,6 @@ class ApiService {
     // Puedes agregar aquí más métodos como delete, put, patch, etc.
 }
 
+
 export default ApiService;
 
