@@ -78,7 +78,9 @@ import { useRouter } from 'vue-router';
 
 			//Validamos el token de google
 			//--------------------------------------------------------------------------
+        console.log("access_token: " + response.access_token)
 				const res = await googleAuthService.verifyGoogleToken(response.access_token);
+        console.log("respuesta: "+ res)
 			//--------------------------------------------------------------------------
 
 
