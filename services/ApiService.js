@@ -3,7 +3,7 @@ import axios from 'axios';
 class ApiService {
     constructor() {
         this.axios = axios.create({
-            baseURL: 'http://localhost/api_book_reader/public/api',
+            baseURL: 'https://api100citas.dairewdesign.com',
         });
         
         // Agrega aquí cualquier interceptor que necesites
